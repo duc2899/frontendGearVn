@@ -1,0 +1,23 @@
+:where(.css-dev-only-do-not-override-2i2tap).ant-steps
+  .ant-steps-item-finish
+  > .ant-steps-item-container
+  > .ant-steps-item-tail::after {
+  background-color: red !important;
+  height: 3px;
+  border-radius: 5px;
+}
+:where(.css-dev-only-do-not-override-2i2tap).ant-steps
+  .ant-steps-item-wait
+  > .ant-steps-item-container
+  > .ant-steps-item-tail::after {
+  background-color: transparent !important;
+  border-top: 3px dashed #535353;
+}
+
+:where(.css-dev-only-do-not-override-2i2tap).ant-steps
+  .ant-steps-item-process
+  > .ant-steps-item-container
+  > .ant-steps-item-tail::after {
+  background-color: transparent !important;
+  border-top: 3px dashed #535353;
+}

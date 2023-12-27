@@ -42,7 +42,7 @@ function OrderManager({ Data, setTab, setDetailOrder }) {
     setDetailOrder(data);
   };
   return (
-    <div className="bg-white rounded-md p-4 w-3/4 ">
+    <div className="bg-white rounded-md p-4 lg:w-3/4 w-full">
       <h1 className="font-semibold text-2xl mb-3">Quản lý đơn hàng</h1>
       <Search
         placeholder="Tìm kiếm đơn hàng theo mã"

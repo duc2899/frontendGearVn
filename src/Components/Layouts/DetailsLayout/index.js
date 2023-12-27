@@ -15,7 +15,7 @@ const dataLaptop = {
     "https://product.hstatic.net/200000722513/product/ook-14-oled-m1405ya-km047w-r5-7530u_2_1e7414e288ee45dcad153f77bb973bcb_982d7213abf74eeea6d8224c0e1de83d_grande.png",
   oldPrice: 19390000,
   saleRate: 0.5,
-  quantity: 13,
+  quantity: 0,
   description:
     "Để duy trì mọi hoạt động và công suất làm việc từ các linh kiện một cách tốt nhất nhà Asus đã trang bị thêm hệ thống tản nhiệt trên laptop Asus Vivobook OLED. Công nghệ tản nhiệt Asus IceCool hiệu quả khi sử dụng 6 ống dẫn nhiệt và bộ quạt IceBlade 87 cánh được làm bằng Polymer tinh thể lỏng cao cấp.",
   properties: [
@@ -135,7 +135,6 @@ const dataLaptop = {
 
 function DetailLayout(props) {
   const location = window.location.pathname.split("/");
-  const id = location[3];
 
   return (
     <div className="w-full bg-gray-300 pb-3">
@@ -156,13 +155,15 @@ function DetailLayout(props) {
             {location[2]}
           </Link>
           <span>/</span>
-          <span>{dataLaptop.title}</span>
+          <span className="lg:line-clamp-none line-clamp-1 lg:w-fit w-36">
+            {dataLaptop.title}
+          </span>
         </div>
-        <div className="bg-white rounded-md mt-2 flex gap-x-3">
+        <div className="bg-white rounded-md mt-2 flex gap-x-3 lg:flex-row flex-col">
           <BlockImagePreview
             PrivewImages={dataLaptop.previewImages}
           ></BlockImagePreview>
-          <div className="border-l-2 p-5 w-8/12">
+          <div className="border-l-2 p-5 lg:w-8/12 w-full">
             <h2 className="text-2xl font-semibold">{dataLaptop.title}</h2>
             <div className="flex gap-x-3 items-center">
               <div className="flex items-center">
@@ -188,14 +189,13 @@ function DetailLayout(props) {
             </div>
             <div className="mt-2">
               <div>
-                <span className="font-medium">Số lượng còn lại: </span>
-                <span className="font-semibold text-red-600 text-lg">
-                  {dataLaptop.quantity}
-                </span>
-              </div>
-              <div>
-                <button className="w-2/4 bg-red-600 rounded-md p-3 text-white text-lg font-semibold hover:opacity-90 transition-all">
-                  MUA NGAY
+                <button
+                  disabled={!dataLaptop.quantity > 0}
+                  className={`w-2/4 ${
+                    dataLaptop.quantity > 0 ? "bg-red-600" : "bg-gray-400"
+                  } rounded-md p-3 text-white text-lg font-semibold hover:opacity-90 transition-all`}
+                >
+                  {dataLaptop.quantity > 0 ? "MUA NGAY" : "HẾT HÀNG"}
                 </button>
               </div>
             </div>

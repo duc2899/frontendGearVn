@@ -21,7 +21,7 @@ function AddressNote({ Data }) {
     message.success("Click on Yes");
   };
   return (
-    <div className="bg-white rounded-md p-4 w-3/4 max-sm:w-full">
+    <div className="bg-white rounded-md p-4 w-3/4 max-sm:w-full min-h-96">
       <div className="flex items-center justify-between mb-8">
         <h2 className="font-semibold text-2xl">Sổ địa chỉ</h2>
         <button
@@ -51,7 +51,7 @@ function AddressNote({ Data }) {
         </button>
       </div>
       <div>
-        {Data.addressNote.map((item, i) => (
+        {Data.addressNotes?.map((item, i) => (
           <div key={i} className="my-6 ">
             <div className="flex items-center justify-between">
               <div>
@@ -83,7 +83,7 @@ function AddressNote({ Data }) {
                 ", " +
                 item.ward.name +
                 ", " +
-                item.districts.name +
+                item.district.name +
                 ", " +
                 item.city.name}
             </div>
@@ -91,7 +91,7 @@ function AddressNote({ Data }) {
               <ModalAddress
                 open={openModal}
                 setOpen={setOpenModal}
-                data={Data.addressNote[edit]}
+                data={Data.addressNotes[edit]}
               ></ModalAddress>
             )}
           </div>

@@ -15,16 +15,16 @@ function ModalFeedback({ exitModal, data }) {
   const [hoverStar, setHoverStar] = useState(undefined);
   return (
     <div className="fixed top-0 left-0 z-20 bg-black-rgba w-full h-full flex items-center justify-center transition ease-in-out delay-150">
-      <div className="bg-white w-9/12 h-1/2 rounded-md flex relative animate__animated animate__fadeInDown">
+      <div className="bg-white w-9/12 lg:h-1/2 h-fit rounded-md flex relative animate__animated animate__fadeInDown lg:flex-row flex-col">
         <CloseIcon
           onClick={() => exitModal(false)}
           className="absolute top-2 right-2 text-gray-700 w-5 h-5 cursor-pointer"
         ></CloseIcon>
-        <div className="w-1/3 h-full bg-red-600 flex items-center justify-center flex-col rounded-tl-md rounded-bl-md">
+        <div className="lg:w-1/3 w-full h-full bg-red-600 flex items-center justify-center flex-col rounded-tl-md rounded-bl-md lg:rounded-none">
           <img className="w-64 h-64 object-cover" src={data.image} alt="art" />
           <p className="text-white font-semibold break-words">{data.title}</p>
         </div>
-        <div className="p-2 w-2/3">
+        <div className="p-2 lg:w-2/3 w-full">
           <h2 className="flex font-semibold p-2">
             Đánh giá của bạn về:
             <p className="font-bold pl-2">{data.title}</p>

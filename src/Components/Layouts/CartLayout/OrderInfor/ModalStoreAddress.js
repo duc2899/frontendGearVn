@@ -4,7 +4,8 @@ import { Input } from "@mui/material";
 function ModalStoreAddress({ setOpen, open, data, setResultChoose }) {
   const [choose, setChoose] = useState(data.length);
   const handleOk = () => {
-    setResultChoose(choose - 1);
+    const { id, ...result } = data[choose - 1];
+    setResultChoose(result);
     setOpen(false);
   };
   const handleCancel = () => {
@@ -52,7 +53,7 @@ function ModalStoreAddress({ setOpen, open, data, setResultChoose }) {
                 ", " +
                 item.ward.name +
                 ", " +
-                item.districts.name +
+                item.district.name +
                 ", " +
                 item.city.name}
             </span>

@@ -56,7 +56,7 @@ function BannerLayout(props) {
               key={image.id}
               src={image.url}
               alt={image.alt}
-              className={`transition-all rounded-md ${
+              className={`transition-all rounded-lg ${
                 image.id === slide ? "block w-full object-cover" : "hidden"
               }`}
             />
@@ -78,33 +78,35 @@ function BannerLayout(props) {
             onClick={nextImage}
           ></KeyboardArrowRightIcon>
         </div>
-        <div className="row-span-1 lg:block hidden">
+        <div className="row-span-1 lg:flex lg:justify-around lg:gap-2 lg:flex-col hidden pl-3">
           <img
-            className=""
-            src="https://file.hstatic.net/200000722513/file/right_1_ec08d1cb99f247f5aaedf6ecf66c33f3.png"
+            className="rounded-lg"
+            src="https://file.hstatic.net/200000722513/file/gearvn-dai-tiec-rog-san-qua-toi-tuf-slider_47335ea3529147b2a278a1975f2989b0.jpg"
             alt="ki"
           />
           <img
-            className=""
-            src="https://file.hstatic.net/200000722513/file/right_1_ec08d1cb99f247f5aaedf6ecf66c33f3.png"
+            className="rounded-lg "
+            src="https://hacom.vn/media/lib/01-02-2021/0201-tintuc.png"
             alt="ki"
           />
         </div>
-        <img
-          className="-ml-3 sm: pl-2"
-          src="https://file.hstatic.net/200000722513/file/right_1_ec08d1cb99f247f5aaedf6ecf66c33f3.png"
-          alt="ki"
-        />
-        <img
-          className="-ml-1.5"
-          src="https://file.hstatic.net/200000722513/file/right_1_ec08d1cb99f247f5aaedf6ecf66c33f3.png"
-          alt="ki"
-        />
-        <img
-          className="pr-1 lg:pr-2"
-          src="https://file.hstatic.net/200000722513/file/right_1_ec08d1cb99f247f5aaedf6ecf66c33f3.png"
-          alt="ki"
-        />
+        <div className="flex items-center gap-1">
+          <img
+            className=" rounded-lg"
+            src="https://static.ladipage.net/5bf3dc7edc60303c34e4991f/landing-page-final-10-20220601093805.png"
+            alt="ki"
+          />
+          <img
+            className=" rounded-lg"
+            src="https://file.hstatic.net/1000026716/file/gearvn-laptop-gaming-msi-katana-gf66-12uc-699vn-8_8bf0347aaf054db4b7f9b667494f6f34_1024x1024.jpg"
+            alt="ki"
+          />
+          <img
+            className="rounded-lg"
+            src="https://file.hstatic.net/1000026716/file/gearvn-laptop-gaming-msi-katana-gf66-12uc-699vn-8_8bf0347aaf054db4b7f9b667494f6f34_1024x1024.jpg"
+            alt="ki"
+          />
+        </div>
       </div>
     </div>
   );

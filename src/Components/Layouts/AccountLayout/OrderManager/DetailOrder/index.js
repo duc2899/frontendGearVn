@@ -11,7 +11,7 @@ import convertMoney from "../../../../Utils/ConvertMoney";
 import priceSale from "../../../../Utils/ConvertPriceSale";
 function DetailOrder({ detailOrder, setTab }) {
   return (
-    <div className="bg-white rounded-md p-4 lg:w-3/4 w-full">
+    <div className="bg-white rounded-md p-4 lg:w-3/4 w-full min-h-96">
       <div className="flex items-center justify-between">
         <h2 className="font-semibold text-2xl">
           Chi tiết đơn hàng {detailOrder.id}

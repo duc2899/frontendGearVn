@@ -11,7 +11,7 @@ function BlockFeedback({ data }) {
       <h2 className="text-2xl font-semibold mb-3">
         Đánh giá & Nhận xét {data.title}
       </h2>
-      <div className="flex items-center justify-center gap-x-10">
+      <div className="flex items-center justify-center gap-x-10 lg:flex-row flex-col">
         <div className="flex items-center flex-col">
           <p className="flex text-3xl font-semibold text-red-600 items-center">
             {CalculateStars(data.stars)}/5.0
@@ -19,7 +19,7 @@ function BlockFeedback({ data }) {
           </p>
           <p>({data.dataFeedback.length}) đánh giá & nhận xét</p>
         </div>
-        <div>
+        <div className="lg:mb-0 mb-3 mt-3">
           {data.stars.map((star, i) => (
             <div className="flex items-center gap-x-3" key={i}>
               <p className="flex items-center text-lg gap-x-2">
@@ -31,7 +31,7 @@ function BlockFeedback({ data }) {
                 />
               </p>
               <div
-                className={`h-3 w-96 rounded-md  ${
+                className={`h-3 lg:w-96 w-40 rounded-md  ${
                   star.count === 0 ? "bg-gray-300" : "bg-green-500"
                 }`}
               ></div>

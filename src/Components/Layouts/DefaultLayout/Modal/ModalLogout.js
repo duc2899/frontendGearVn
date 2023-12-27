@@ -2,11 +2,14 @@ import { Fragment, useContext, useRef } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import { UserContext } from "../../../Context/AccountUser";
+import { useNavigate } from "react-router-dom";
 
 export default function ModalLogout({ open, setOpen }) {
+  const navigate = useNavigate();
   const { setUserAccount } = useContext(UserContext);
   const cancelButtonRef = useRef(null);
   const handelLogout = () => {
+    navigate("/");
     setUserAccount({});
     setOpen(false);
   };
@@ -14,7 +17,7 @@ export default function ModalLogout({ open, setOpen }) {
     <Transition.Root show={open} as={Fragment}>
       <Dialog
         as="div"
-        className="relative z-10"
+        className="relative z-30"
         initialFocus={cancelButtonRef}
         onClose={setOpen}
       >

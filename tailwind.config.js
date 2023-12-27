@@ -3,6 +3,9 @@ module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
+      zIndex: {
+        2000: "20",
+      },
       scale: {
         115: "1.05",
       },
@@ -18,6 +21,19 @@ module.exports = {
       },
       minHeight: {
         vh52: "52vh",
+        96: "24rem",
+      },
+      borderWidth: {
+        "1px": "1px",
+      },
+      top: {
+        pxCustom: "-1px",
+      },
+      right: {
+        fourPxCustom: "-3px",
+      },
+      bottom: {
+        pxCustom: "-1px",
       },
       width: {
         widthBorder: "70%",

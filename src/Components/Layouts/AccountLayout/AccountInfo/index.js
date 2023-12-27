@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { Upload } from "antd";
 
 function AccountInfo({ UserData }) {
   const [isEdit, setIsEdit] = useState(false);
-
+  const [fileList, setFileList] = useState([]);
   const [isChange, setIsChange] = useState(false);
   const {
     register,
@@ -38,8 +39,27 @@ function AccountInfo({ UserData }) {
     console.log(data);
     setIsEdit(false);
   };
+  const onChange = ({ fileList: newFileList }) => {
+    console.log(newFileList);
+    setFileList(newFileList);
+  };
+  const onPreview = async (file) => {
+    let src = file.url;
+
+    if (!src) {
+      src = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file.originFileObj);
+        reader.onload = () => resolve(reader.result);
+      });
+    }
+    const image = new Image();
+    image.src = src;
+    const imgWindow = window.open(src);
+    imgWindow?.document.write(image.outerHTML);
+  };
   return (
-    <div className="bg-white rounded-md p-4 w-3/4 max-sm:w-full">
+    <div className="bg-white rounded-md p-4 w-3/4 max-sm:w-full min-h-96">
       <h1 className="font-semibold text-2xl mb-3">Thông tin tài khoản</h1>
       <div className="flex items-center gap-x-3 mb-2 w-2/6 justify-between">
         <p className="font-medium">Họ Tên: </p>
@@ -122,6 +142,17 @@ function AccountInfo({ UserData }) {
         ) : (
           <p>{handelEndCodeEmail()}</p>
         )}
+      </div>
+      <div>
+        <Upload
+          listType="picture-card"
+          fileList={fileList}
+          onChange={onChange}
+          onPreview={onPreview}
+          maxCount={1}
+        >
+          {fileList.length < 5 && "+ Upload"}
+        </Upload>
       </div>
       <div className="mt-3">
         {isEdit ? (

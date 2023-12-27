@@ -17,14 +17,14 @@ import { UserContext } from "../../../Context/AccountUser";
 const MENU_HEADER = [
   {
     icon: (
-      <HeadsetMicIcon className="lg:text-white text-black m-3"></HeadsetMicIcon>
+      <HeadsetMicIcon className="md:text-white text-black m-3"></HeadsetMicIcon>
     ),
     title: "Hotline 1800.6975",
     href: "/#",
   },
   {
     icon: (
-      <LocationOnIcon className="lg:text-white text-black m-3"></LocationOnIcon>
+      <LocationOnIcon className="md:text-white text-black m-3"></LocationOnIcon>
     ),
     title: "Hệ thống showroom",
     href: "/#",
@@ -32,7 +32,7 @@ const MENU_HEADER = [
   {
     icon: (
       <div className="relative">
-        <ShoppingCartIcon className="lg:text-white text-black m-3"></ShoppingCartIcon>
+        <ShoppingCartIcon className="md:text-white text-black m-3"></ShoppingCartIcon>
         <div className="w-4 h-4 font-bold text-xs flex items-center justify-center absolute top-1 right-1 rounded-full bg-yellow-400 text-black border border-spacing-1 border-white">
           1
         </div>
@@ -123,8 +123,7 @@ const MENU_LOGIN = [
 ];
 
 function Header(props) {
-  const { userAccount } = useContext(UserContext);
-  const isLogin = Object.entries(userAccount).length !== 0;
+  const { isLogin } = useContext(UserContext);
 
   const [openRegister, setOpenRegister] = useState(false);
   const [openLogin, setOpenLogin] = useState(false);
@@ -137,7 +136,7 @@ function Header(props) {
   };
 
   return (
-    <header className="bg-red-600 fixed top-0 right-0 left-0 z-10">
+    <header className="bg-red-600 fixed top-0 right-0 left-0 z-2000">
       <nav
         className="mx-auto flex max-w-7xl items-center justify-between p-3 lg:px-8"
         aria-label="Global"
@@ -156,7 +155,7 @@ function Header(props) {
           >
             <span className="sr-only">Open main menu</span>
             <svg
-              className="h-6 w-6"
+              className="h-8 w-8"
               fill="none"
               viewBox="0 0 24 24"
               strokeWidth="1.5"
@@ -211,7 +210,7 @@ function Header(props) {
           >
             {item.icon}
             <div
-              className={`h-12 font-semibold text-white leading-5 flex items-center justify-center ${
+              className={`h-12 max-xl:hidden font-semibold text-white leading-5 flex items-center justify-center ${
                 item.title === "Giỏ hàng" ? "w-10" : "w-20"
               }`}
             >
@@ -353,7 +352,7 @@ function Header(props) {
         aria-modal="true"
       >
         <div className="fixed inset-0 z-10 bg-black-rgba"></div>
-        <div className="fixed top-0 right-0 z-10 w-full h-1/2 overflow-y-auto bg-white">
+        <div className="fixed top-0 right-0 z-10 w-full h-auto overflow-y-auto bg-white">
           <div className="flex items-center justify-between bg-red-500 p-3">
             <a href="/#" className="-m-1.5 p-1.5 ">
               <img className="h-8 w-auto" src={logo} alt="" />
@@ -412,7 +411,10 @@ function Header(props) {
                   ))}
                   <div
                     className="flex items-center justify-start hover:bg-gray-200 hover:rounded-md cursor-pointer"
-                    onClick={() => setOpenLogout(true)}
+                    onClick={() => {
+                      setOpenDialog(false);
+                      setOpenLogout(true);
+                    }}
                   >
                     <LogoutIcon className="w-6 h-6 lg:m-0 m-3"></LogoutIcon>
                     <span className="font-medium text-gray-600 ">
@@ -424,7 +426,10 @@ function Header(props) {
                 <>
                   <div
                     className="flex items-center cursor-pointer w-full mt-6 divide-y divide-gray-500/10 hover:bg-gray-200 hover:rounded-md"
-                    onClick={() => setOpenLogin(true)}
+                    onClick={() => {
+                      setOpenDialog(false);
+                      setOpenLogin(true);
+                    }}
                   >
                     <LoginIcon className="lg:text-white text-black m-3"></LoginIcon>
                     <div className="h-12 lg:w-20 w-full font-semibold text-gray-600 leading-5 flex items-center lg:justify-center justify-start">
@@ -433,7 +438,10 @@ function Header(props) {
                   </div>
                   <div
                     className="flex items-center cursor-pointer w-full divide-y divide-gray-500/10 hover:bg-gray-200 hover:rounded-md"
-                    onClick={() => setOpenRegister(true)}
+                    onClick={() => {
+                      setOpenDialog(false);
+                      setOpenRegister(true);
+                    }}
                   >
                     <AppRegistrationIcon className="lg:text-white  text-black m-3 "></AppRegistrationIcon>
                     <div className="h-12 lg:w-20 w-full font-semibold text-gray-600  leading-5 flex items-center lg:justify-center justify-start ">

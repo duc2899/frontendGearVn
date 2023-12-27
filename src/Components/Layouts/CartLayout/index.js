@@ -5,10 +5,12 @@ import convertMoney from "../../Utils/ConvertMoney";
 import CartInfor from "./CartInfor";
 import OrderInfor from "./OrderInfor";
 import PaymentInfor from "./PaymentInfor";
+import SuccessOrder from "./SuccessOrder";
 import { ArrowBack } from "@mui/icons-material";
 import { UserContext } from "../../Context/AccountUser";
 import ModalLogin from "../DefaultLayout/Modal/ModalLogin";
 import ModalRegister from "../DefaultLayout/Modal/ModalRegister";
+import { Empty } from "antd";
 const Data = {
   items: [
     {
@@ -28,7 +30,7 @@ const Data = {
       quantity: 2,
     },
   ],
-  totalPrice: 20000000,
+  totalPrice: 3000000,
 };
 
 function CartLayout(props) {
@@ -45,7 +47,7 @@ function CartLayout(props) {
     }
   };
   const onChangePrev = () => {
-    if (progress < 4) {
+    if (progress < 3) {
       setProgress(progress - 1);
     }
   };
@@ -56,16 +58,19 @@ function CartLayout(props) {
       Data={Data}
       onChange={onChange}
       dataOrder={dataOrder}
+      addressNote={userAccount.addressNotes}
       setDataOrder={setDataOrder}
     ></OrderInfor>,
     <PaymentInfor
       Data={Data}
       dataOrder={dataOrder}
       setDataOrder={setDataOrder}
+      onChange={onChange}
     ></PaymentInfor>,
+    <SuccessOrder></SuccessOrder>,
   ];
   const onChangeStep = (value) => {
-    if (value < progress) {
+    if (value < progress && progress !== 3) {
       setProgress(value);
     }
   };
@@ -211,11 +216,25 @@ function CartLayout(props) {
             ></Steps>
           </div>
         </div>
-        {views[progress]}
+        {Data.items.length > 0 ? (
+          views[progress]
+        ) : (
+          <div className="flex flex-col items-center gap-5 mt-3">
+            <Empty></Empty>
+            <a href="/" className="bg-blue-500 p-2 rounded-md text-white">
+              Tiếp tục mua hàng
+            </a>
+          </div>
+        )}
         {progress > 0 && progress < 3 && (
-          <div className="flex items-center mt-2" onClick={onChangePrev}>
+          <div className="flex items-center mt-2">
             <ArrowBack fontSize="small" sx={{ color: "blue" }}></ArrowBack>
-            <button className="text-blue-500 font-medium">Trở về</button>
+            <button
+              className="text-blue-500 font-medium"
+              onClick={onChangePrev}
+            >
+              Trở về
+            </button>
           </div>
         )}
         <ModalLogin

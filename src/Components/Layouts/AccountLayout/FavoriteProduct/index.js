@@ -3,7 +3,7 @@ import priceSale from "../../../Utils/ConvertPriceSale";
 import convertMoney from "../../../Utils/ConvertMoney";
 function FavoriteProduct({ data }) {
   return (
-    <div className="bg-white rounded-md p-4 w-3/4 max-sm:w-full">
+    <div className="bg-white rounded-md p-4 w-3/4 max-sm:w-full min-h-96">
       <h2 className="font-semibold text-2xl">Sản phẩm đã xem</h2>
       <div className="lg:grid lg:grid-cols-4 gap-4 mt-3 md:grid md:grid-cols-2 sm:grid-cols-1 max-sm:flex max-sm:flex-col max-sm:items-center">
         {data.map((item, i) => (

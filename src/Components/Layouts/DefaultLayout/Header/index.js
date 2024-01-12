@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
@@ -13,7 +13,11 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import logo from "../logo.svg";
 import ModalLogout from "../Modal/ModalLogout";
 import { UserContext } from "../../../Context/AccountUser";
-
+import ModalForgotPassword from "../Modal/ModalForgotPassword";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import ModalInputOTP from "../Modal/ModalInputOTP";
+import ModalChangePassword from "../Modal/ModalChangePassword";
 const MENU_HEADER = [
   {
     icon: (
@@ -126,15 +130,27 @@ function Header(props) {
   const { isLogin } = useContext(UserContext);
 
   const [openRegister, setOpenRegister] = useState(false);
+  const [successForgot, setSuccessForgot] = useState(false);
+  const [openForgotPass, setOpenForgotPass] = useState(false);
   const [openLogin, setOpenLogin] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [openLogout, setOpenLogout] = useState(false);
+  const [openInputOTP, setOpenInputOTP] = useState(false);
+  const [openChangePass, setOpenChangePass] = useState(false);
 
   const handelClickTab = (id) => {
     const path = window.location.origin;
     window.location.href = path + `/settingAccount/${id}`;
   };
-
+  useEffect(() => {
+    if (successForgot) {
+      toast.success("Vui lòng kiểm tra email của bạn");
+      setSuccessForgot(false);
+      setTimeout(() => {
+        setOpenInputOTP(true);
+      }, 2000);
+    }
+  }, [successForgot]);
   return (
     <header className="bg-red-600 fixed top-0 right-0 left-0 z-2000">
       <nav
@@ -147,7 +163,7 @@ function Header(props) {
             <img className="h-8 w-auto" src={logo} alt="" />
           </a>
         </div>
-        <div className="flex lg:hidden">
+        <div className="flex md:hidden">
           <button
             type="button"
             className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
@@ -170,7 +186,7 @@ function Header(props) {
             </svg>
           </button>
         </div>
-        <div className="relative max-md:hidden bg-white rounded-md w-96 flex justify-between items-center px-3 mr-3">
+        <div className="relative bg-white rounded-md w-96 flex justify-between items-center px-3 mr-3">
           <input
             className="bg-white outline-none border-none p-2 rounded-md w-80"
             placeholder="Bạn cần tìm gì?"
@@ -343,7 +359,25 @@ function Header(props) {
           open={openLogin}
           setOpen={setOpenLogin}
           setRegister={setOpenRegister}
+          setForgotPass={setOpenForgotPass}
         ></ModalLogin>
+
+        <ModalForgotPassword
+          open={openForgotPass}
+          setOpen={setOpenForgotPass}
+          setSuccessForgot={setSuccessForgot}
+        ></ModalForgotPassword>
+
+        <ModalInputOTP
+          open={openInputOTP}
+          setOpen={setOpenInputOTP}
+          setOpenChangePass={setOpenChangePass}
+        ></ModalInputOTP>
+
+        <ModalChangePassword
+          open={openChangePass}
+          setOpen={setOpenChangePass}
+        ></ModalChangePassword>
       </nav>
 
       <div

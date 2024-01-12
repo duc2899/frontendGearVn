@@ -7,7 +7,7 @@ import discountImage from "../../StoreIcons/offer.png";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import { message } from "antd";
@@ -155,13 +155,7 @@ const PaymentInfor = ({ Data, onChange, dataOrder, setDataOrder }) => {
   return (
     <div className="p-2">
       {contextHolder}
-      <ToastContainer
-        className={"top-20"}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        position="top-right"
-      />
+
       <div>
         <h2 className="font-medium text-2xl">Thông tin đặt hàng</h2>
         <div className="flex items-center mt-2">

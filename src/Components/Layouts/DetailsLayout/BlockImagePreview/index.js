@@ -1,8 +1,8 @@
 import React, { useState, useRef } from "react";
 
-function BlockImagePreview({ PrivewImages }) {
+function BlockImagePreview({ PreviewImages }) {
   const [resultZoom, setResultZoom] = useState(false);
-  const [curImage, setCurrImage] = useState(2);
+  const [curImage, setCurrImage] = useState(0);
 
   const imageRef = useRef();
   const resultImageRef = useRef();
@@ -26,7 +26,7 @@ function BlockImagePreview({ PrivewImages }) {
       <div>
         <img
           className="w-fit h-fit object-cover cursor-zoom-in"
-          src={PrivewImages[curImage].url}
+          src={PreviewImages[curImage].image}
           alt="helo"
           ref={imageRef}
           onMouseLeave={() => setResultZoom(false)}
@@ -36,7 +36,7 @@ function BlockImagePreview({ PrivewImages }) {
         {resultZoom && (
           <div
             style={{
-              backgroundImage: `url(${PrivewImages[curImage].url})`,
+              backgroundImage: `url(${PreviewImages[curImage].image})`,
             }}
             ref={resultImageRef}
             className={`fixed w-40 h-40 border border-gray-400 translate-y-4 -translate-x-1/2 bg-no-repeat rounded-full`}
@@ -44,15 +44,15 @@ function BlockImagePreview({ PrivewImages }) {
         )}
       </div>
       <div className="flex items-center lg:justify-start justify-center gap-x-3">
-        {PrivewImages.map((image) => (
+        {PreviewImages.map((image, index) => (
           <img
-            onClick={() => setCurrImage(image.id)}
+            onClick={() => setCurrImage(index)}
             className={`w-16 h-16 object-contain cursor-pointer ${
-              image.id === curImage && "border border-red-600"
+              index === curImage && "border border-red-600"
             } rounded-md`}
-            src={image.url}
+            src={image.image}
             key={image.id}
-            alt={image.alt}
+            alt={image.image}
           />
         ))}
       </div>

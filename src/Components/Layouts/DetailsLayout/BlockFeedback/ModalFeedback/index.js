@@ -13,6 +13,7 @@ function ModalFeedback({ exitModal, data }) {
   const stars = Array(5).fill(0);
   const [currentStar, setCurrentStar] = useState(5);
   const [hoverStar, setHoverStar] = useState(undefined);
+
   return (
     <div className="fixed top-0 left-0 z-20 bg-black-rgba w-full h-full flex items-center justify-center transition ease-in-out delay-150">
       <div className="bg-white w-9/12 lg:h-1/2 h-fit rounded-md flex relative animate__animated animate__fadeInDown lg:flex-row flex-col">

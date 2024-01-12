@@ -5,12 +5,20 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import "animate.css";
 import AccountUserContext from "./Components/Context/AccountUser";
+import { ToastContainer } from "react-toastify";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <AccountUserContext>
       <App />
+      <ToastContainer
+        className={"top-20"}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        position="top-right"
+      />
     </AccountUserContext>
   </React.StrictMode>
 );

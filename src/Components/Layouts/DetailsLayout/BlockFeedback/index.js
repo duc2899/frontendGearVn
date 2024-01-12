@@ -5,7 +5,15 @@ import ModalFeedback from "./ModalFeedback";
 import CalculateStars from "../../../Utils/CalculateStars";
 function BlockFeedback({ data }) {
   const [openFeedback, setOpenFeedback] = useState(false);
-
+  const findStarInFeedback = (dataStars, star) => {
+    let count = 0;
+    dataStars.map((dataStar) => {
+      if (dataStar.star === star) {
+        count++;
+      }
+    });
+    return count;
+  };
   return (
     <div className="bg-white rounded-md mt-2 flex gap-x-3 flex-col p-5">
       <h2 className="text-2xl font-semibold mb-3">
@@ -13,17 +21,23 @@ function BlockFeedback({ data }) {
       </h2>
       <div className="flex items-center justify-center gap-x-10 lg:flex-row flex-col">
         <div className="flex items-center flex-col">
-          <p className="flex text-3xl font-semibold text-red-600 items-center">
-            {CalculateStars(data.stars)}/5.0
-            <img src={starImage} alt="star" className="w-5 h-5 object-cover" />
-          </p>
+          {data.dataFeedback && (
+            <p className="flex text-3xl font-semibold text-red-600 items-center">
+              {CalculateStars(data.dataFeedback)}/5.0
+              <img
+                src={starImage}
+                alt="star"
+                className="w-5 h-5 object-cover"
+              />
+            </p>
+          )}
           <p>({data.dataFeedback.length}) đánh giá & nhận xét</p>
         </div>
         <div className="lg:mb-0 mb-3 mt-3">
-          {data.stars.map((star, i) => (
+          {_.times(5, (i) => (
             <div className="flex items-center gap-x-3" key={i}>
               <p className="flex items-center text-lg gap-x-2">
-                {star.star}
+                {i + 1}
                 <img
                   src={starImage}
                   alt="star"
@@ -32,10 +46,14 @@ function BlockFeedback({ data }) {
               </p>
               <div
                 className={`h-3 lg:w-96 w-40 rounded-md  ${
-                  star.count === 0 ? "bg-gray-300" : "bg-green-500"
+                  findStarInFeedback(data.dataFeedback, i + 1) === 0
+                    ? "bg-gray-300"
+                    : "bg-green-500"
                 }`}
               ></div>
-              <div>({star.count} đánh giá)</div>
+              <div>
+                ({findStarInFeedback(data.dataFeedback, i + 1)} đánh giá)
+              </div>
             </div>
           ))}
         </div>

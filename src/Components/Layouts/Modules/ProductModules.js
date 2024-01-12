@@ -13,7 +13,7 @@ import expand from "../StoreIcons/full-screen.png";
 import charge from "../StoreIcons/battery-status.png";
 import mouseWire from "../StoreIcons/mouseWire.png";
 import lightRgb from "../StoreIcons/light-rgb.png";
-
+import CalculateStars from "../../Utils/CalculateStars";
 const IconsMouse = [
   {
     name: "CHARGER",
@@ -87,15 +87,7 @@ function ProductModules({ data, type }) {
     const percent = (100 - rate * 100) / 100;
     return oldPrice * percent;
   };
-  const totalStars = data.stars.reduce((total, current) => {
-    return total + current.star * current.count;
-  }, 0);
-  const totalFeedback = data.stars.reduce((total, curr) => {
-    return total + curr.count;
-  }, 0);
-  const starFeedback = () => {
-    return Number.parseFloat(totalStars / totalFeedback).toFixed(1);
-  };
+
   return (
     <div className="p-2 w-52 border">
       <div>
@@ -107,7 +99,7 @@ function ProductModules({ data, type }) {
           />
         </Link>
         <Link
-          to={"/details"}
+          to={`/details/laptop/${data.id}`}
           className="break-words font-semibold text-sm leading-3 hover:text-red-500 "
         >
           {data.title}
@@ -143,7 +135,7 @@ function ProductModules({ data, type }) {
       </div>
       <div className="flex items-center gap-2 mt-2">
         <div className="flex items-center">
-          <p className="text-yellow-400">{starFeedback()}</p>
+          <p className="text-yellow-400">{CalculateStars(data.dataFeedback)}</p>
           <img src={star} alt="star" className="w-5 h-5 object-cover" />
         </div>
         <p>({data.dataFeedback.length} đánh giá)</p>

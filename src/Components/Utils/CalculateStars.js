@@ -1,13 +1,9 @@
-import React from "react";
-
 function CalculateStars(data) {
   const totalStars = data.reduce((total, current) => {
-    return total + current.star * current.count;
+    return total + current.star;
   }, 0);
-  const totalFeedback = data.reduce((total, curr) => {
-    return total + curr.count;
-  }, 0);
-  return Number.parseFloat(totalStars / totalFeedback).toFixed(1);
+  const res = totalStars / data.length;
+  return res ? res.toFixed(1) : 0;
 }
 
 export default CalculateStars;

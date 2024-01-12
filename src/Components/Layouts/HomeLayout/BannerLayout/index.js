@@ -44,7 +44,7 @@ function BannerLayout(props) {
   }, [slide]);
 
   return (
-    <div className="basis-auto sm mt-3">
+    <div className="basis-auto sm">
       <div className="grid grid-cols-3 gap-y-3">
         <div className="flex overflow-hidden relative col-span-3 lg:col-span-2">
           <KeyboardArrowLeftIcon

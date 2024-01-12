@@ -5,6 +5,7 @@ import { Dropdown, Popover } from "antd";
 import convertMoney from "../../Utils/ConvertMoney";
 import MultiRangeSlider from "multi-range-slider-react";
 import ProductModules from "../Modules/ProductModules";
+import { getAllLaptopProduct } from "../../Services/ProductsServices/getAllLaptopProductService";
 function CollectionModules() {
   const mouseData = [
     {
@@ -676,7 +677,16 @@ function CollectionModules() {
 
   useEffect(() => {
     if (location[location.length - 1] === "laptop") {
-      return setRes(LaptopData);
+      const fetchAPI = async () => {
+        try {
+          const data = await getAllLaptopProduct();
+          setRes(data);
+        } catch (err) {
+          console.log(err);
+        }
+      };
+      fetchAPI();
+      return;
     } else if (location[location.length - 1] === "mouse") {
       return setRes(mouseData);
     } else if (location[location.length - 1] === "keyboard") {
@@ -732,7 +742,7 @@ function CollectionModules() {
   };
   res.map((item) => {
     if (!arr.includes(item.properties[open - 1].properties)) {
-      arr.push(item.properties[open - 1].properties);
+      return arr.push(item.properties[open - 1].properties);
     }
   });
   const handelFilter = (data, name) => {

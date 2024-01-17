@@ -81,7 +81,7 @@ const MENU_LOGIN = [
         />
       </svg>
     ),
-    title: "Sản phẩm đã xem",
+    title: "Sản phẩm đã thích",
   },
 ];
 
@@ -92,10 +92,10 @@ function AccountLayout(props) {
   );
   const [detailOrder, setDetailOrder] = useState(null);
   const MENU_OPTIONS = [
-    <AccountInfo UserData={userAccount}></AccountInfo>,
-    <AddressNote Data={userAccount}></AddressNote>,
+    <AccountInfo Data={userAccount}></AccountInfo>,
+    <AddressNote idUser={userAccount.id}></AddressNote>,
     <OrderManager
-      Data={userAccount}
+      idUser={userAccount.id}
       setTab={setTab}
       setDetailOrder={setDetailOrder}
     ></OrderManager>,

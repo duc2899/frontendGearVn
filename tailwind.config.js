@@ -9,7 +9,6 @@ module.exports = {
       scale: {
         115: "1.05",
       },
-
       backgroundColor: {
         "black-rgba": "rgba(0, 0, 0, 0.34)",
       },
@@ -37,9 +36,11 @@ module.exports = {
       },
       bottom: {
         pxCustom: "-1px",
+        "-165px": "-165px",
       },
       width: {
         widthBorder: "70%",
+        114: "35rem",
       },
     },
   },

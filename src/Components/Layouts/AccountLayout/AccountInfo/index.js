@@ -1,16 +1,15 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Upload } from "antd";
-
-function AccountInfo({ UserData }) {
+import { editAccountService } from "../../../Services/AccountServices/EditAccountService";
+function AccountInfo({ Data }) {
   const [isEdit, setIsEdit] = useState(false);
-  const [fileList, setFileList] = useState([]);
   const [isChange, setIsChange] = useState(false);
+  const [UserData, setUserData] = useState(Data);
   const {
     register,
     handleSubmit,
     watch,
-    formState: { errors, isValid },
+    formState: { errors },
   } = useForm();
 
   const handelEndCodePhoneNumber = () => {
@@ -18,46 +17,35 @@ function AccountInfo({ UserData }) {
     return newNum.padEnd(10, "*");
   };
   const handelEndCodeEmail = () => {
-    const arrString = UserData.email.split("@");
+    const arrString = UserData?.email.split("@");
     const str1 = arrString[0].slice(0, 4).padEnd(arrString[0].length, "*");
     return str1 + "@" + arrString[1];
   };
 
   useEffect(() => {
     if (
-      watch(["userName", "phoneNumber", "email"])[0] !== UserData.userName ||
-      watch(["userName", "phoneNumber", "email"])[1] !== UserData.phoneNumber ||
-      watch(["userName", "phoneNumber", "email"])[2] !== UserData.email
+      watch(["userName", "phoneNumber"])[0] !== UserData.userName ||
+      watch(["userName", "phoneNumber"])[1] !== UserData.phoneNumber
     ) {
       setIsChange(true);
     } else {
       setIsChange(false);
     }
-  }, [watch(["userName", "phoneNumber", "email"])]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [watch(["userName", "phoneNumber"])]);
 
   const handelEdit = (data) => {
-    console.log(data);
-    setIsEdit(false);
+    data.id = UserData.id;
+    const fetchAPI = async () => {
+      const res = await editAccountService(data);
+      if (res.status === 200) {
+        setUserData(res.data.data);
+        setIsEdit(false);
+      }
+    };
+    fetchAPI();
   };
-  const onChange = ({ fileList: newFileList }) => {
-    console.log(newFileList);
-    setFileList(newFileList);
-  };
-  const onPreview = async (file) => {
-    let src = file.url;
 
-    if (!src) {
-      src = await new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file.originFileObj);
-        reader.onload = () => resolve(reader.result);
-      });
-    }
-    const image = new Image();
-    image.src = src;
-    const imgWindow = window.open(src);
-    imgWindow?.document.write(image.outerHTML);
-  };
   return (
     <div className="bg-white rounded-md p-4 w-3/4 max-sm:w-full min-h-96">
       <h1 className="font-semibold text-2xl mb-3">Thông tin tài khoản</h1>
@@ -68,17 +56,27 @@ function AccountInfo({ UserData }) {
             <input
               className="p-2 rounded-md bg-white border focus:outline-none"
               defaultValue={UserData.userName}
-              {...register("userName", { required: true })}
+              {...register("userName", {
+                required: true,
+                minLength: 3,
+                maxLength: 15,
+              })}
               type="text"
             />
             {errors.userName?.type === "required" && (
-              <div className="text-red-500 font-semibold text-sm">
+              <div className="text-red-500 font-semibold te,xt-sm">
                 Trường bắt buộc
               </div>
             )}
+            {errors.userName?.type === "maxLength" ||
+              (errors.userName?.type === "minLength" && (
+                <div className="text-red-500 font-semibold te,xt-sm">
+                  Tên chỉ được phép từ 3 đến 15 ký tự
+                </div>
+              ))}
           </div>
         ) : (
-          <h2 className="font-bold">Bui Duc</h2>
+          <h2 className="font-bold">{UserData.userName}</h2>
         )}
       </div>
       <div className="flex items-center gap-x-3 mb-2  w-2/6 justify-between">
@@ -114,46 +112,9 @@ function AccountInfo({ UserData }) {
       </div>
       <div className="flex items-center gap-x-3 mb-2  w-2/6 justify-between">
         <p className="font-medium">Email:</p>
-        {isEdit ? (
-          <div>
-            <input
-              className="p-2 rounded-md bg-white border focus:outline-none"
-              defaultValue={UserData.email}
-              {...register("email", {
-                required: true,
-                pattern: {
-                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: "Địa chỉ Email sai định dạng",
-                },
-              })}
-              type="text"
-            />
-            {errors.email?.type === "required" && (
-              <div className="text-red-500 font-semibold text-sm">
-                Trường bắt buộc
-              </div>
-            )}
-            {errors.email?.message && (
-              <div className="text-red-500 font-semibold text-sm">
-                {errors.email?.message}
-              </div>
-            )}
-          </div>
-        ) : (
-          <p>{handelEndCodeEmail()}</p>
-        )}
+        <p>{handelEndCodeEmail()}</p>
       </div>
-      <div>
-        <Upload
-          listType="picture-card"
-          fileList={fileList}
-          onChange={onChange}
-          onPreview={onPreview}
-          maxCount={1}
-        >
-          {fileList.length < 5 && "+ Upload"}
-        </Upload>
-      </div>
+
       <div className="mt-3">
         {isEdit ? (
           <div className="flex items-center gap-x-3">

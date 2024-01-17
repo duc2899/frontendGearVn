@@ -1,5 +1,5 @@
 import { HomeOutlined } from "@mui/icons-material";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import star from "../StoreIcons/star.png";
 import BlockFeedback from "./BlockFeedback";
@@ -9,12 +9,16 @@ import convertMoney from "../../Utils/ConvertMoney";
 import priceSale from "../../Utils/ConvertPriceSale";
 import ConvertStringToLowercase from "../../Utils/ConvertStringToLowercase";
 import { getProductByID } from "../../Services/ProductsServices/getProductByIDService";
-
+import { UserContext } from "../../Context/AccountUser";
+import ModalLogin from "../DefaultLayout/Modal/ModalLogin";
+import { actionCartService } from "../../Services/CartServices/ActionsCartService";
+import { CartUserProvider } from "../../Context/CartUser";
 function DetailLayout(props) {
+  const { isLogin, userAccount } = useContext(UserContext);
+  const { setShowCart } = useContext(CartUserProvider);
+  const [open, setOpen] = useState(false);
   const location = window.location.pathname.split("/");
-
   const [data, setData] = useState({});
-  console.log(data);
   useEffect(() => {
     const fetchAPI = async () => {
       try {
@@ -26,6 +30,24 @@ function DetailLayout(props) {
     };
     fetchAPI();
   }, [location[3]]);
+
+  const handelAddToCart = (id) => {
+    if (isLogin) {
+      const fetchAPI = async () => {
+        const res = await actionCartService({
+          idUser: userAccount.id,
+          amount: 1,
+          id_product: id,
+        });
+        if (res.status === 200) {
+          setShowCart(true);
+        }
+      };
+      fetchAPI();
+    } else {
+      setOpen(true);
+    }
+  };
   return (
     <div className="w-full bg-gray-300 pb-3">
       <div className="mx-auto flex max-w-7xl lg:px-8 flex-col">
@@ -75,20 +97,29 @@ function DetailLayout(props) {
                 {convertMoney(priceSale(data.oldPrice, data.saleRate))}
               </p>
               <del className="text-sm">{convertMoney(data.oldPrice)}</del>
-              <p className="border border-red-500 p-1 bg-red-200 w-fit rounded-md text-red-600 text-sm">
-                -{data.saleRate * 100}%
-              </p>
+              {data.saleRate * 100 != 0 && (
+                <p className="border border-red-500 p-1 bg-red-200 w-fit rounded-md text-red-600 text-sm">
+                  -{data.saleRate * 100}%
+                </p>
+              )}
             </div>
             <div className="mt-2">
               <div>
-                <button
-                  disabled={!data.quantity > 0}
-                  className={`w-2/4 ${
-                    data.quantity > 0 ? "bg-red-600" : "bg-gray-400"
-                  } rounded-md p-3 text-white text-lg font-semibold hover:opacity-90 transition-all`}
-                >
-                  {data.quantity > 0 ? "MUA NGAY" : "HẾT HÀNG"}
-                </button>
+                {data.quantity > 0 ? (
+                  <button
+                    onClick={() => handelAddToCart(data.id)}
+                    className={`w-2/4 bg-red-600 rounded-md p-3 text-white text-lg font-semibold hover:opacity-90 transition-all`}
+                  >
+                    MUA NGAY
+                  </button>
+                ) : (
+                  <button
+                    disabled={!data.quantity > 0}
+                    className={`w-2/4 bg-gray-400 rounded-md p-3 text-white text-lg font-semibold hover:opacity-90 transition-all`}
+                  >
+                    HẾT HÀNG
+                  </button>
+                )}
               </div>
             </div>
             <div className="mt-3">
@@ -115,8 +146,15 @@ function DetailLayout(props) {
           </div>
         </div>
         {/* block fedback */}
-        {data.dataFeedback && <BlockFeedback data={data}></BlockFeedback>}
+        {data.dataFeedback && (
+          <BlockFeedback
+            data={data}
+            idUser={userAccount.id}
+            setData={setData}
+          ></BlockFeedback>
+        )}
       </div>
+      <ModalLogin open={open} setOpen={setOpen}></ModalLogin>
     </div>
   );
 }

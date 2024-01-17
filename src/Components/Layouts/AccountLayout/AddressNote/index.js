@@ -1,14 +1,22 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ModalAddress from "./ModalAddress";
-import { message, Popconfirm } from "antd";
-
-function AddressNote({ Data }) {
+import { Popconfirm } from "antd";
+import { getAddressNoteService } from "../../../Services/AddressNoteServices/GetAddressNoteService";
+import { deleteAddressNoteService } from "../../../Services/AddressNoteServices/DeleteAddressNoteService";
+function AddressNote({ idUser }) {
   const [openModal, setOpenModal] = useState({
     isOpen: false,
     isEdit: false,
   });
   const [edit, setEdit] = useState(0);
-
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    const fetchAPI = async () => {
+      const res = await getAddressNoteService(idUser);
+      setData(res.data);
+    };
+    fetchAPI();
+  }, []);
   const handelEdit = (i) => {
     setEdit(i);
     setOpenModal({
@@ -16,10 +24,20 @@ function AddressNote({ Data }) {
       isEdit: true,
     });
   };
-  const confirm = (index) => {
-    console.log(index);
-    message.success("Click on Yes");
+  const confirm = async (id) => {
+    const res = await deleteAddressNoteService({
+      idUser: idUser,
+      idAddress: id,
+    });
+    if (res.status === 200) {
+      const fetchAPI = async () => {
+        const res = await getAddressNoteService(idUser);
+        setData(res.data);
+      };
+      fetchAPI();
+    }
   };
+
   return (
     <div className="bg-white rounded-md p-4 w-3/4 max-sm:w-full min-h-96">
       <div className="flex items-center justify-between mb-8">
@@ -51,11 +69,11 @@ function AddressNote({ Data }) {
         </button>
       </div>
       <div>
-        {Data.addressNotes?.map((item, i) => (
+        {data.map((item, i) => (
           <div key={i} className="my-6 ">
             <div className="flex items-center justify-between">
               <div>
-                <span className="mr-1 font-semibold">{item.userName}</span>|
+                <span className="mr-1 font-semibold">{item.nameCustomer}</span>|
                 <span className="ml-1">{item.phoneNumber}</span>
               </div>
               <div>
@@ -68,7 +86,7 @@ function AddressNote({ Data }) {
                 <Popconfirm
                   title="Xóa địa chỉ này"
                   description="Bạn có chắc bạn muốn xóa địa chỉ này?"
-                  onConfirm={() => confirm(i)}
+                  onConfirm={() => confirm(item.id)}
                   okText="Xóa"
                   cancelText="Không"
                 >
@@ -79,7 +97,7 @@ function AddressNote({ Data }) {
               </div>
             </div>
             <div>
-              {item.address +
+              {item.homeAddress +
                 ", " +
                 item.ward.name +
                 ", " +
@@ -91,14 +109,21 @@ function AddressNote({ Data }) {
               <ModalAddress
                 open={openModal}
                 setOpen={setOpenModal}
-                data={Data.addressNotes[edit]}
+                dataEdit={data[edit]}
+                idUser={idUser}
+                setData={setData}
               ></ModalAddress>
             )}
           </div>
         ))}
       </div>
       {openModal.isOpen && !openModal.isEdit && (
-        <ModalAddress open={openModal} setOpen={setOpenModal}></ModalAddress>
+        <ModalAddress
+          open={openModal}
+          setOpen={setOpenModal}
+          idUser={idUser}
+          setData={setData}
+        ></ModalAddress>
       )}
     </div>
   );

@@ -3,15 +3,29 @@ import { Dialog, Transition } from "@headlessui/react";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import { UserContext } from "../../../Context/AccountUser";
 import { useNavigate } from "react-router-dom";
+import { logoutAccountService } from "../../../Services/AccountServices/LogoutAccountService";
+import DeleteCookie from "../../../Utils/Cookie/DeleteCookie";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function ModalLogout({ open, setOpen }) {
   const navigate = useNavigate();
-  const { setUserAccount } = useContext(UserContext);
+  const { setIsLogin } = useContext(UserContext);
   const cancelButtonRef = useRef(null);
   const handelLogout = () => {
-    navigate("/");
-    setUserAccount({});
-    setOpen(false);
+    const fetchAPI = async () => {
+      const res = await logoutAccountService();
+      if (res.status === 200) {
+        DeleteCookie("user");
+        navigate("/");
+        setOpen(false);
+        setIsLogin(false);
+        toast.success("Đăng xuát tài khoản thành công");
+      } else {
+        toast.error(res.message);
+      }
+    };
+    fetchAPI();
   };
   return (
     <Transition.Root show={open} as={Fragment}>

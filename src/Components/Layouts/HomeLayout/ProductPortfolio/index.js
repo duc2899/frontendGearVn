@@ -93,7 +93,7 @@ function ProductPortfolio(props) {
     },
   };
   return (
-    <div className="bg-white mt-3 p-2">
+    <div className="bg-white mt-3 p-6 rounded-md">
       <h1 className="text-3xl font-semibold mb-2">Danh mục sản phẩm</h1>
 
       <div className="p-3">

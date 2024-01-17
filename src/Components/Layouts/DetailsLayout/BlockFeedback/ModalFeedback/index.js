@@ -1,7 +1,10 @@
 import StarIcon from "@mui/icons-material/Star";
 import CloseIcon from "@mui/icons-material/Close";
 import React, { useState } from "react";
-
+import { createFeedbackService } from "../../../../Services/FeedbackServices/CreateFeedbackService";
+import { getProductByID } from "../../../../Services/ProductsServices/getProductByIDService";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const levelStars = [
   "Rất không hài lòng",
   "Không hài lòng",
@@ -9,11 +12,31 @@ const levelStars = [
   "Tốt",
   "Xuất sắc",
 ];
-function ModalFeedback({ exitModal, data }) {
+function ModalFeedback({ exitModal, data, idUser, setData }) {
   const stars = Array(5).fill(0);
   const [currentStar, setCurrentStar] = useState(5);
   const [hoverStar, setHoverStar] = useState(undefined);
+  const [text, setText] = useState("");
 
+  const handelSendFeedback = async () => {
+    const res = await createFeedbackService({
+      idProduct: data.id,
+      idUser: idUser,
+      message: text,
+      star: currentStar,
+    });
+    if (res.status === 200) {
+      const fetchAPI = async () => {
+        const res = await getProductByID(data.id);
+        setData(res);
+      };
+      fetchAPI();
+      toast.success("Đánh giá sản phẩm thành công");
+      exitModal(false);
+    } else {
+      toast.error("Không thể gửi đánh giá");
+    }
+  };
   return (
     <div className="fixed top-0 left-0 z-20 bg-black-rgba w-full h-full flex items-center justify-center transition ease-in-out delay-150">
       <div className="bg-white w-9/12 lg:h-1/2 h-fit rounded-md flex relative animate__animated animate__fadeInDown lg:flex-row flex-col">
@@ -52,8 +75,10 @@ function ModalFeedback({ exitModal, data }) {
             <textarea
               id="message"
               rows="4"
-              class="block resize-none p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              className="block resize-none p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 outline-none"
               placeholder="Nhập đánh giá của bạn về sản phẩm..."
+              onChange={(e) => setText(e.target.value)}
+              value={text}
             ></textarea>
           </div>
           <div className="flex items-end justify-between mt-16 mr-2">
@@ -63,7 +88,10 @@ function ModalFeedback({ exitModal, data }) {
             >
               Hủy
             </button>
-            <button className="bg-red-600 font-semibold text-white p-2 rounded-md disabled:bg-gray-400 hover:opacity-90">
+            <button
+              onClick={handelSendFeedback}
+              className="bg-red-600 font-semibold text-white p-2 rounded-md disabled:bg-gray-400 hover:opacity-90"
+            >
               Gửi đánh giá
             </button>
           </div>

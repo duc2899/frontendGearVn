@@ -1,10 +1,22 @@
-import React, { useState } from "react";
-import { Modal, Button } from "antd";
-import { Input } from "@mui/material";
-function ModalStoreAddress({ setOpen, open, data, setResultChoose }) {
+import React, { useEffect, useState } from "react";
+import { Modal } from "antd";
+import { getAddressNoteService } from "../../../Services/AddressNoteServices/GetAddressNoteService";
+
+function ModalStoreAddress({ setOpen, open, idUser, setResultChoose }) {
+  const [data, setData] = useState([]);
   const [choose, setChoose] = useState(data.length);
+
+  useEffect(() => {
+    const fetchAPI = async () => {
+      const res = await getAddressNoteService(idUser);
+      if (res.status === 200) {
+        setData(res.data);
+      }
+    };
+    fetchAPI();
+  }, []);
   const handleOk = () => {
-    const { id, ...result } = data[choose - 1];
+    const { id, ...result } = data[choose];
     setResultChoose(result);
     setOpen(false);
   };
@@ -32,7 +44,7 @@ function ModalStoreAddress({ setOpen, open, data, setResultChoose }) {
       )}
     >
       {data.length > 0 ? (
-        data.map((item) => (
+        data.map((item, i) => (
           <label
             htmlFor={item.id}
             key={item.id}
@@ -41,15 +53,15 @@ function ModalStoreAddress({ setOpen, open, data, setResultChoose }) {
             <input
               id={item.id}
               type="radio"
-              onChange={() => setChoose(item.id)}
-              checked={item.id === choose}
+              onChange={() => setChoose(i)}
+              checked={i === choose}
             />
             <span className="ml-2 font-medium">
-              {item.userName +
+              {item.nameCustomer +
                 " | " +
                 item.phoneNumber +
                 " - " +
-                item.address +
+                item.homeAddress +
                 ", " +
                 item.ward.name +
                 ", " +

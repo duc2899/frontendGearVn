@@ -28,7 +28,7 @@ const TechnologyNews = () => {
     },
   ];
   return (
-    <div className="bg-white mt-3 p-2 mb-3 pb-4">
+    <div className="bg-white mt-3 p-6 mb-3 pb-4 rounded-md">
       <h1 className="text-3xl font-semibold mb-2">Tin tức công nghệ</h1>
       <div className="items-center gap-4 lg:flex-row flex flex-col">
         {data.map((item) => (

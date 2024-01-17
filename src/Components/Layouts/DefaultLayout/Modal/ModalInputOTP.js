@@ -3,11 +3,27 @@ import React, { useEffect, useState } from "react";
 import OtpInput from "react-otp-input";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-function ModalInputOTP({ open, setOpen, setOpenChangePass }) {
+import { checkOTPdService } from "../../../Services/AccountServices/CheckOTPService";
+function ModalInputOTP({
+  open,
+  setOpen,
+  setOpenChangePass,
+  expiredTime,
+  email,
+}) {
   const [otp, setOtp] = useState("");
   const [checkOTP, setCheckOTP] = useState(false);
-  const [time, setTime] = useState(60); // Thời gian đếm ngược, đơn vị là giây
-  const [timerActive, setTimerActive] = useState(true); // Trạng thái kích hoạt đếm ngược
+  const [time, setTime] = useState(0); // Thời gian đếm ngược, đơn vị là giây
+
+  const [timerActive, setTimerActive] = useState(false); // Trạng thái kích hoạt đếm ngược
+
+  useEffect(() => {
+    if (expiredTime) {
+      setTime(60 * expiredTime);
+      setTimerActive(true);
+    }
+  }, [expiredTime]);
+
   useEffect(() => {
     let interval;
 
@@ -26,15 +42,19 @@ function ModalInputOTP({ open, setOpen, setOpenChangePass }) {
     setTime(100);
     toast.success("Mã OTP đã được gửi lại. Vui lòng kiểm tra lại email");
   };
-  const handelResultOTP = () => {
-    if (otp.length > 3) {
-      //   setCheckOTP(true);
-      console.log(otp);
+  const handelResultOTP = async () => {
+    const res = await checkOTPdService({ email: email, code: otp });
+    if (res.status === 200) {
+      setTime(0);
+      toast.success("Mã otp chính xác");
       setOpenChangePass(true);
       setOpen(false);
-      //   setTimeout(() => {
-      //     setCheckOTP(false);
-      //   }, 1000);
+    } else {
+      toast.error(res.message);
+      setCheckOTP(true);
+      setTimeout(() => {
+        setCheckOTP(false);
+      }, 1000);
     }
   };
 
@@ -51,9 +71,7 @@ function ModalInputOTP({ open, setOpen, setOpenChangePass }) {
       <div className="flex flex-col justify-center items-center">
         <p className="mb-3 font-medium text-gray-400">
           Nhập mã OTP được gửi về địa chỉ Email
-          <span className="ml-1 font-semibold text-black">
-            Shroudduc@gmail.com
-          </span>
+          <span className="ml-1 font-semibold text-black">{email}</span>
         </p>
         <OtpInput
           shouldAutoFocus={true}

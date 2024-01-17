@@ -123,14 +123,17 @@ function ProductModules({ data, type }) {
         )}
       </div>
       <div>
-        <del>{convertMoney(data.oldPrice)}</del>
-        <div>
+        {data.saleRate > 0 && <del>{convertMoney(data.oldPrice)}</del>}
+
+        <div className={`${data.saleRate <= 0 && "mt-6"}`}>
           <span className="text-red-600 font-semibold mr-2">
             {convertMoney(handelPriceSale(data.oldPrice, data.saleRate))}
           </span>
-          <span className="p-0.5 border border-red-600 text-red-600 bg-red-200 font-semibold rounded-md">
-            - {data.saleRate * 100}%
-          </span>
+          {data.saleRate > 0 && (
+            <span className="p-0.5 border border-red-600 text-red-600 bg-red-200 font-semibold rounded-md">
+              - {data.saleRate * 100}%
+            </span>
+          )}
         </div>
       </div>
       <div className="flex items-center gap-2 mt-2">

@@ -2,7 +2,9 @@ import React from "react";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import ProductModules from "../../Modules/ProductModules";
-
+import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
+import ArrowCircleLeftIcon from "@mui/icons-material/ArrowCircleLeft";
+import { useNavigate } from "react-router-dom";
 const MouseData = [
   {
     id: "awefawe-123123dwdw",
@@ -426,6 +428,7 @@ const MouseData = [
   },
 ];
 function MouseCollections(props) {
+  const navigate = useNavigate();
   const responsive = {
     desktop: {
       breakpoint: { max: 3000, min: 1024 },
@@ -444,8 +447,16 @@ function MouseCollections(props) {
     },
   };
   return (
-    <div className="bg-white mt-3 p-2">
-      <h1 className="text-3xl font-semibold mb-2">Chuột bán chạy</h1>
+    <div className="bg-white mt-3 p-6 rounded-md">
+      <div className="flex items-center justify-between">
+        <h1 className="text-3xl font-semibold mb-2">Chuột bán chạy</h1>
+        <p
+          onClick={() => navigate("/collections/mouse")}
+          className="text-blue-500 hover:opacity-70 cursor-pointer"
+        >
+          Xem tất cả
+        </p>
+      </div>
       <div>
         <Carousel
           responsive={responsive}
@@ -462,6 +473,12 @@ function MouseCollections(props) {
           //   className="w-auto"
           itemClass="w-72"
           rewind={true}
+          customRightArrow={
+            <ArrowCircleRightIcon className="text-4xl absolute right-0 cursor-pointer hover:opacity-60 transition-opacity"></ArrowCircleRightIcon>
+          }
+          customLeftArrow={
+            <ArrowCircleLeftIcon className="text-4xl absolute left-0 cursor-pointer hover:opacity-60 transition-opacity"></ArrowCircleLeftIcon>
+          }
         >
           {MouseData.map((data, index) => (
             <ProductModules

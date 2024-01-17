@@ -1,13 +1,37 @@
 import React, { useContext } from "react";
 import convertMoney from "../../../Utils/ConvertMoney";
 import priceSale from "../../../Utils/ConvertPriceSale";
-import { UserContext } from "../../../Context/AccountUser";
+import { actionCartService } from "../../../Services/CartServices/ActionsCartService";
+import { getCartService } from "../../../Services/CartServices/GetCartService";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-function CartInfor({ Data, onChange }) {
+function CartInfor({ CartData, onChange, totalOrder, idUser, setDataCart }) {
+  const handelActionCart = (amount, id) => {
+    const fetchAPI = async () => {
+      const data = {
+        idUser: idUser,
+        amount: amount,
+        id_product: id,
+      };
+      const res = await actionCartService(data);
+      if (res.status === 200) {
+        const getCartAPI = async () => {
+          const res = await getCartService(idUser);
+          setDataCart(res.data);
+        };
+        getCartAPI();
+      } else {
+        toast.error("Hàng trong kho không đủ");
+      }
+    };
+    fetchAPI();
+  };
+
   return (
     <>
       <div className="mt-5 border-b-2 border-gray-300 mb-8">
-        {Data.items.map((item, index) => (
+        {CartData.map((item, index) => (
           <div
             key={index}
             className="flex justify-around items-center py-2 lg:flex-row flex-col"
@@ -20,6 +44,7 @@ function CartInfor({ Data, onChange }) {
               ></img>
               <div className="flex items-center justify-center mt-2">
                 <svg
+                  onClick={() => handelActionCart(-item.amount, item.idProduct)}
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -36,7 +61,9 @@ function CartInfor({ Data, onChange }) {
               </div>
             </div>
             <div>
-              <h3 className="font-semibold">{item.title}</h3>
+              <a href={`details/${item.nameCategory}/${item.idProduct}`}>
+                {item.title}
+              </a>
             </div>
             <div className="">
               <p className="font-semibold text-red-500 text-xl">
@@ -47,7 +74,7 @@ function CartInfor({ Data, onChange }) {
               </del>
               <div className="flex items-center mt-2">
                 <button
-                  disabled
+                  onClick={() => handelActionCart(-1, item.idProduct)}
                   className="border rounded-tl-md rounded-bl-md bg-white px-2 h-8"
                 >
                   <svg
@@ -65,10 +92,13 @@ function CartInfor({ Data, onChange }) {
                 </button>
                 <input
                   disabled
-                  value={item.quantity}
+                  value={item.amount}
                   className="text-center w-12 border border-t border-b h-8 border-r-transparent border-l-transparent"
                 />
-                <button className="border rounded-tr-md rounded-br-md bg-white px-2 h-8">
+                <button
+                  onClick={() => handelActionCart(1, item.idProduct)}
+                  className="border rounded-tr-md rounded-br-md bg-white px-2 h-8"
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
@@ -91,7 +121,7 @@ function CartInfor({ Data, onChange }) {
         <div className="flex justify-between">
           <p className="font-semibold text-lg">Tổng tiền:</p>
           <p className="text-red-500 font-bold text-xl">
-            {convertMoney(Data.totalPrice)}
+            {convertMoney(totalOrder)}
           </p>
         </div>
         <button

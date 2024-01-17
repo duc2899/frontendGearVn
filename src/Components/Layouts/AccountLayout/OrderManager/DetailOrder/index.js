@@ -6,40 +6,128 @@ import HomeIcon from "@mui/icons-material/Home";
 import cardUser from "../../../StoreIcons/cardUser.png";
 import paymentMethod from "../../../StoreIcons/payment-method.png";
 import productInfor from "../../../StoreIcons/productInfor.png";
-import { Steps } from "antd";
+import { Steps, Modal, Button } from "antd";
+import { ExclamationCircleFilled } from "@ant-design/icons";
 import convertMoney from "../../../../Utils/ConvertMoney";
 import priceSale from "../../../../Utils/ConvertPriceSale";
+import { cancelBillService } from "../../../../Services/BIllServices/CancelBillService";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 function DetailOrder({ detailOrder, setTab }) {
+  const STATUS_ORDER = [
+    {
+      color: "text-blue-400",
+      name: "Đơn hàng đã đặt",
+    },
+    {
+      color: "text-yellow-400",
+      name: "Tiếp nhận và xử lý",
+    },
+    {
+      color: "text-violet-400",
+      name: "Đang giao hàng",
+    },
+    {
+      color: "text-green-400",
+      name: "Đã giao hàng",
+    },
+  ];
+  const { confirm } = Modal;
+  const showConfirm = (idBill) => {
+    confirm({
+      title: "Bạn có muốn xóa đơn hàng này?",
+      icon: <ExclamationCircleFilled />,
+      content: "",
+      okText: "Xóa",
+      cancelText: <button>Hủy</button>,
+      onOk() {
+        const handelCancelBill = async () => {
+          const res = await cancelBillService({ idBill: idBill });
+          if (res.status === 200) {
+            toast.success("Hủy đơn hàng thành công");
+            setTab(2);
+          } else {
+            toast.error("Hủy đơn hàng thất bại");
+          }
+        };
+        handelCancelBill();
+      },
+      onCancel() {
+        console.log("Cancel");
+      },
+    });
+  };
+
   return (
     <div className="bg-white rounded-md p-4 lg:w-3/4 w-full min-h-96">
       <div className="flex items-center justify-between">
         <h2 className="font-semibold text-2xl">
-          Chi tiết đơn hàng {detailOrder.id}
+          Chi tiết đơn hàng{" "}
+          <span className="text-orange-500">#{detailOrder.id}</span>
+          {detailOrder.isCancelOrder ? (
+            <span className="text-red-500 ml-3">- Đơn hàng đã bị hủy</span>
+          ) : (
+            <span
+              className={`${
+                STATUS_ORDER[detailOrder.statusBill - 1].color
+              } ml-3`}
+            >
+              - {STATUS_ORDER[detailOrder.statusBill - 1].name}
+            </span>
+          )}
         </h2>
         <p className="text-base font-medium">
-          Đặt lúc: {detailOrder.createdAt}
+          Đặt lúc: {detailOrder.createdDate}
         </p>
       </div>
       <div className="mt-8">
         <Steps
-          current={detailOrder.statusOrder - 1}
+          current={detailOrder.statusBill - 1}
           labelPlacement="vertical"
           items={[
             {
               icon: <EventNoteIcon className="text-3xl" />,
-              title: "Đơn hàng đã đặt",
+              subTitle: (
+                <p className="text-blue-500 font-medium">Đơn hàng đã đặt</p>
+              ),
             },
             {
-              icon: <ManageAccountsIcon className="text-3xl" />,
-              title: "Tiếp nhận và chờ xử lý",
+              icon: (
+                <ManageAccountsIcon className="text-3xl"></ManageAccountsIcon>
+              ),
+              subTitle: (
+                <p
+                  className={`${
+                    detailOrder.statusBill >= 2 && "text-blue-500 font-medium"
+                  }`}
+                >
+                  Tiếp nhận và chờ xử lý
+                </p>
+              ),
             },
             {
               icon: <LocalShippingIcon className="text-3xl" />,
-              title: "Đang giao hàng",
+              subTitle: (
+                <p
+                  className={`${
+                    detailOrder.statusBill >= 3 && "text-blue-500 font-medium"
+                  }`}
+                >
+                  Đang giao hàng
+                </p>
+              ),
             },
             {
               icon: <HomeIcon className="text-3xl" />,
-              title: "Đã giao hàng",
+              subTitle: (
+                <p
+                  className={`${
+                    detailOrder.statusBill >= 4 && "text-blue-500 font-medium"
+                  }`}
+                >
+                  Đã giao hàng
+                </p>
+              ),
             },
           ]}
         />
@@ -52,7 +140,7 @@ function DetailOrder({ detailOrder, setTab }) {
           </div>
           <div className="flex items-center">
             <p className="w-1/4 font-medium mr-2">Người nhận:</p>
-            <p className="w-3/4">{detailOrder.customer}</p>
+            <p className="w-3/4">{detailOrder.name}</p>
           </div>
           <div className="flex items-center justify-start mt-2">
             <p className="w-1/4 font-medium mr-2 justify-self-start">
@@ -72,7 +160,11 @@ function DetailOrder({ detailOrder, setTab }) {
           </div>
           <div className="flex items-center">
             <p className="w-3/4 font-medium mr-2">Phương thức thanh toán:</p>
-            <p className="w-1/4 ">{detailOrder.paymentType}</p>
+            <p className="w-1/4 ">
+              {detailOrder.paymentType === "COD"
+                ? "Thanh toán khi nhạn hàng (COD)"
+                : "Thanh toán trực tuyến (ONLINE)"}
+            </p>
           </div>
           <div className="flex items-center">
             <p className="w-3/4 font-medium mr-2">Thanh toán tiền:</p>
@@ -92,7 +184,7 @@ function DetailOrder({ detailOrder, setTab }) {
           <p className="font-medium text-lg">Thông tin sản phẩm</p>
         </div>
         <div>
-          {detailOrder.items.map((item, i) => (
+          {detailOrder.products.map((item, i) => (
             <div
               key={i}
               className="flex items-center justify-around lg:flex-nowrap flex-wrap"
@@ -100,12 +192,12 @@ function DetailOrder({ detailOrder, setTab }) {
               <img
                 src={item.image}
                 className="w-20 object-cover rounded-md"
-                alt={item.title}
+                alt={item.name}
               />
-              <p className="font-medium ">{item.title}</p>
-              <p className="text-base">Số lượng: {item.quantity}</p>
+              <p className="font-medium ">{item.name}</p>
+              <p className="text-base">Số lượng: {item.amount}</p>
               <p className="text-red-500 font-medium">
-                {convertMoney(priceSale(item.oldPrice, item.saleRate))}
+                {convertMoney(priceSale(item.price, item.saleRate))}
               </p>
             </div>
           ))}
@@ -115,7 +207,7 @@ function DetailOrder({ detailOrder, setTab }) {
         <div className="flex items-center w-1/2">
           <p className="w-9/12 font-medium">Giá tạm tính:</p>
           <p className="w-12/12 font-medium">
-            {convertMoney(detailOrder.totalPrice - detailOrder.priceDelivery)}
+            {convertMoney(detailOrder.temporaryPrice)}
           </p>
         </div>
         <div className="flex items-center w-1/2">
@@ -127,6 +219,12 @@ function DetailOrder({ detailOrder, setTab }) {
           </p>
         </div>
         <div className="flex items-center w-1/2">
+          <p className="w-9/12 font-medium">Phí giảm giá</p>
+          <p className="w-12/12 font-medium text-red-500">
+            {"-" + convertMoney(detailOrder.discountPrice)}
+          </p>
+        </div>
+        <div className="flex items-center w-1/2">
           <p className="w-9/12 font-medium">Tổng tiền</p>
           <p className="w-12/12 font-medium text-red-500">
             {convertMoney(detailOrder.totalPrice)}
@@ -134,6 +232,14 @@ function DetailOrder({ detailOrder, setTab }) {
         </div>
       </div>
       <div className="w-full flex items-center justify-center mt-3">
+        {detailOrder.statusBill == 1 && !detailOrder.isCancelOrder && (
+          <button
+            onClick={() => showConfirm(detailOrder.id)}
+            className="bg-red-500 rounded-md p-2 text-white hover:opacity-70 mr-3"
+          >
+            Hủy đơn hàng
+          </button>
+        )}
         <button
           onClick={() => setTab(2)}
           className="bg-blue-500 rounded-md p-2 text-white hover:opacity-70"

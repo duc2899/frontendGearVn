@@ -3,7 +3,7 @@ import starImage from "../../StoreIcons/star.png";
 import _ from "lodash";
 import ModalFeedback from "./ModalFeedback";
 import CalculateStars from "../../../Utils/CalculateStars";
-function BlockFeedback({ data }) {
+function BlockFeedback({ data, idUser, setData }) {
   const [openFeedback, setOpenFeedback] = useState(false);
   const findStarInFeedback = (dataStars, star) => {
     let count = 0;
@@ -96,7 +96,12 @@ function BlockFeedback({ data }) {
         Gửi đánh giá của bạn
       </button>
       {openFeedback && (
-        <ModalFeedback data={data} exitModal={setOpenFeedback}></ModalFeedback>
+        <ModalFeedback
+          data={data}
+          exitModal={setOpenFeedback}
+          idUser={idUser}
+          setData={setData}
+        ></ModalFeedback>
       )}
     </div>
   );

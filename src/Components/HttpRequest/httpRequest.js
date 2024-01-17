@@ -12,12 +12,12 @@ export const post = async (path, formData, options = {}) => {
   const response = await httpRequest.post(path, formData, options);
   return response.data;
 };
-export const remove = async (path, options = {}) => {
-  const response = await httpRequest.delete(path, options);
+export const remove = async (path, formData, options = {}) => {
+  const response = await httpRequest.delete(path, formData, options);
   return response.data;
 };
 export const update = async (path, formData, options = {}) => {
-  const response = await httpRequest.patch(path, formData, options);
+  const response = await httpRequest.put(path, formData, options);
   return response;
 };
 export default httpRequest;

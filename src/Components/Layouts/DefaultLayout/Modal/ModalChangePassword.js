@@ -1,8 +1,11 @@
 import { Modal } from "antd";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import { checkPasswordService } from "../../../Services/AccountServices/ChangePasswordService";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-function ModalChangePassword({ open, setOpen }) {
+function ModalChangePassword({ open, setOpen, email }) {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState("password");
   const [showRePassword, setShowRePassword] = useState("password");
@@ -11,6 +14,7 @@ function ModalChangePassword({ open, setOpen }) {
     register,
     handleSubmit,
     watch,
+    reset,
     formState: { errors },
   } = useForm();
   const handelPassword = (valuePassword) => {
@@ -42,7 +46,19 @@ function ModalChangePassword({ open, setOpen }) {
     if (type === "Trung bình") return "#e2e21d";
     return "red";
   };
-  const onSubmit = (data) => console.log(data);
+  const onSubmit = async (data) => {
+    const res = await checkPasswordService({
+      email: email,
+      password: data.Password,
+    });
+    if (res.status === 200) {
+      reset();
+      setOpen(false);
+      toast.success("Thay đổi mật khẩu thành công");
+    } else {
+      toast.error(res.message);
+    }
+  };
   return (
     <Modal
       title={<h2 className="text-2xl text-center">THAY ĐỔI MẬT KHẨU</h2>}

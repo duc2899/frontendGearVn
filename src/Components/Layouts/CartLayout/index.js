@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Steps } from "antd";
 import "./cart.css";
 import convertMoney from "../../Utils/ConvertMoney";
@@ -10,35 +10,21 @@ import { ArrowBack } from "@mui/icons-material";
 import { UserContext } from "../../Context/AccountUser";
 import ModalLogin from "../DefaultLayout/Modal/ModalLogin";
 import ModalRegister from "../DefaultLayout/Modal/ModalRegister";
+import priceSale from "../../Utils/ConvertPriceSale";
 import { Empty } from "antd";
-const Data = {
-  items: [
-    {
-      title: "Laptop MSI Modern 14 C13M 607VN",
-      image:
-        "https://product.hstatic.net/200000722513/product/1698159670-h6-flow-hero-black_74bd8ecdf2f7432b8c2be64af995e4a4.png",
-      oldPrice: 19390000,
-      saleRate: 0.5,
-      quantity: 2,
-    },
-    {
-      title: "Laptop MSI Modern 14 C13M 607VN",
-      image:
-        "https://product.hstatic.net/200000722513/product/20-236-988-01_7c79ecf51d3f4cee80a8cb4a081e6287.jpg",
-      oldPrice: 19390000,
-      saleRate: 0.5,
-      quantity: 2,
-    },
-  ],
-  totalPrice: 3000000,
-};
 
 function CartLayout(props) {
-  const { userAccount } = useContext(UserContext);
-  const isLogin = Object.entries(userAccount).length !== 0;
+  const { userAccount, isLogin } = useContext(UserContext);
+  const [dataCart, setDataCart] = useState([]);
+
   const [dataOrder, setDataOrder] = useState({});
   const [openModalLogin, setOpenModalLogin] = useState(false);
   const [openModalRegister, setOpenModalRegister] = useState(false);
+
+  useEffect(() => {
+    setDataCart(userAccount.cart);
+  }, [userAccount]);
+
   const onChange = () => {
     if (progress < 4 && isLogin) {
       setProgress(progress + 1);
@@ -52,22 +38,37 @@ function CartLayout(props) {
     }
   };
   const [progress, setProgress] = useState(0);
+
+  const handelCalculateTotalBill = () => {
+    const result = dataCart?.reduce((total, curr) => {
+      return total + priceSale(curr.oldPrice, curr.saleRate) * curr.amount;
+    }, 0);
+    return result;
+  };
+
   const views = [
-    <CartInfor Data={Data} onChange={onChange}></CartInfor>,
-    <OrderInfor
-      Data={Data}
+    <CartInfor
+      idUser={userAccount.id}
+      CartData={dataCart}
       onChange={onChange}
-      dataOrder={dataOrder}
-      addressNote={userAccount.addressNotes}
+      totalOrder={handelCalculateTotalBill()}
+      setDataCart={setDataCart}
+    ></CartInfor>,
+    <OrderInfor
+      onChange={onChange}
+      idUser={userAccount.id}
       setDataOrder={setDataOrder}
+      totalOrder={handelCalculateTotalBill()}
     ></OrderInfor>,
     <PaymentInfor
-      Data={Data}
+      totalOrder={handelCalculateTotalBill()}
       dataOrder={dataOrder}
-      setDataOrder={setDataOrder}
+      CartData={dataCart}
       onChange={onChange}
+      setDataBill={setDataOrder}
+      idUser={userAccount.id}
     ></PaymentInfor>,
-    <SuccessOrder></SuccessOrder>,
+    <SuccessOrder dataBill={dataOrder}></SuccessOrder>,
   ];
   const onChangeStep = (value) => {
     if (value < progress && progress !== 3) {
@@ -216,7 +217,7 @@ function CartLayout(props) {
             ></Steps>
           </div>
         </div>
-        {Data.items.length > 0 ? (
+        {dataCart?.length > 0 ? (
           views[progress]
         ) : (
           <div className="flex flex-col items-center gap-5 mt-3">

@@ -6,19 +6,21 @@ import reportWebVitals from "./reportWebVitals";
 import "animate.css";
 import AccountUserContext from "./Components/Context/AccountUser";
 import { ToastContainer } from "react-toastify";
-
+import CartUserContext from "./Components/Context/CartUser";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <AccountUserContext>
-      <App />
-      <ToastContainer
-        className={"top-20"}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        position="top-right"
-      />
+      <CartUserContext>
+        <App />
+        <ToastContainer
+          className={"top-20"}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          position="top-right"
+        />
+      </CartUserContext>
     </AccountUserContext>
   </React.StrictMode>
 );

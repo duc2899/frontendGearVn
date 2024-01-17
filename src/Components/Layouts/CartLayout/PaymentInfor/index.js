@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import convertMoney from "../../../Utils/ConvertMoney";
 import paymentOnline from "../../StoreIcons/paymentOnlie.png";
 import { Input, Popover } from "antd";
@@ -9,33 +9,23 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 import { message } from "antd";
-const PaymentInfor = ({ Data, onChange, dataOrder, setDataOrder }) => {
-  const discountCode = [
-    {
-      reduce: 100000,
-      condition: 2500000,
-      code: "DAILY100",
-      expiry: "12/26/2023 14:44:19",
-    },
-    {
-      reduce: 50000,
-      condition: 1000000,
-      code: "DAILY50",
-      expiry: "12/21/2023 23:44:19",
-    },
-    {
-      reduce: 20000,
-      condition: 500000,
-      code: "DAILY20",
-      expiry: "12/20/2023 14:44:19",
-    },
-  ];
+import { getDiscountCodeService } from "../../../Services/DiscountCodeServices/GetDiscountCodeService";
+import { checkDiscountCodeService } from "../../../Services/DiscountCodeServices/CheckDiscountCodeService";
+import { createBillService } from "../../../Services/BIllServices/CreateBillService";
+const PaymentInfor = ({
+  totalOrder,
+  onChange,
+  dataOrder,
+  setDataBill,
+  CartData,
+  idUser,
+}) => {
   const type = [
     {
       id: 0,
       typeName: "Thanh toán khi giao hàng (COD)",
+      code: "COD",
       icon: (
         <img
           src={paymentOffline}
@@ -48,6 +38,7 @@ const PaymentInfor = ({ Data, onChange, dataOrder, setDataOrder }) => {
     {
       id: 1,
       typeName: "Thanh toán online",
+      code: "ONLINE",
       icon: (
         <img
           style={{ width: `30px` }}
@@ -57,12 +48,20 @@ const PaymentInfor = ({ Data, onChange, dataOrder, setDataOrder }) => {
       ),
     },
   ];
-
+  const [discountCode, setDisCountCode] = useState([]);
   const [messageApi, contextHolder] = message.useMessage();
-  const [typePayment, setTypePayment] = useState(0);
+  const [typePayment, setTypePayment] = useState("COD");
   const [errorCode, setErrorCode] = useState("");
   const [code, setCode] = useState("");
   const [applyDiscount, setApplyDiscount] = useState({});
+
+  useEffect(() => {
+    const fetchAPI = async () => {
+      const res = await getDiscountCodeService();
+      setDisCountCode(res.data);
+    };
+    fetchAPI();
+  }, []);
   const success = () => {
     messageApi.open({
       type: "success",
@@ -93,14 +92,33 @@ const PaymentInfor = ({ Data, onChange, dataOrder, setDataOrder }) => {
           <div className="w-1/2 font-medium">{data.expiry}</div>
         </div>
         <ul className="font-medium">
-          <li>{`- Giảm ${convertMoney(data.reduce)} cho giá trị đơn hàng`}</li>
-          <li>{`- Mua tối thiểu ${convertMoney(data.condition)}`}</li>
+          <li>{`- Giảm ${convertMoney(
+            data.reduce_price
+          )} cho giá trị đơn hàng`}</li>
+          <li>{`- Mua tối thiểu ${convertMoney(data.condition_price)}`}</li>
         </ul>
       </div>
     );
   };
   const handelCheckCode = () => {
     if (code) {
+      const fetchAPI = async () => {
+        const res = await checkDiscountCodeService({
+          price: totalOrder,
+          code: code,
+        });
+        if (res.status === 200) {
+          setApplyDiscount({
+            value: res.data.reduce_price,
+            code: res.data.code,
+          });
+          toast.success("Áp dụng mã khuyến mãi thành công");
+          setCode("");
+        } else {
+          toast.error(res.message);
+        }
+      };
+      fetchAPI();
     } else {
       setErrorCode("Vui lòng nhập code");
     }
@@ -112,7 +130,7 @@ const PaymentInfor = ({ Data, onChange, dataOrder, setDataOrder }) => {
     // check khi đã có mã
     if (Object.keys(applyDiscount).length !== 0) {
       if (applyDiscount.code !== data.code) {
-        if (Data.totalPrice < data.condition) {
+        if (totalOrder < data.condition_price) {
           toast.error("Mã khuyến mãi không hợp lệ");
           return;
         }
@@ -121,13 +139,13 @@ const PaymentInfor = ({ Data, onChange, dataOrder, setDataOrder }) => {
           return;
         }
         setApplyDiscount({
-          value: data.reduce,
+          value: data.reduce_price,
           code: data.code,
         });
         toast.success("Áp dụng mã khuyến mãi thành công");
       }
     } else {
-      if (Data.totalPrice < data.condition) {
+      if (totalOrder < data.condition_price) {
         toast.error("Mã khuyến mãi không hợp lệ");
         return;
       }
@@ -137,7 +155,7 @@ const PaymentInfor = ({ Data, onChange, dataOrder, setDataOrder }) => {
         return;
       }
       setApplyDiscount({
-        value: data.reduce,
+        value: data.reduce_price,
         code: data.code,
       });
       toast.success("Áp dụng mã khuyến mãi thành công");
@@ -150,7 +168,45 @@ const PaymentInfor = ({ Data, onChange, dataOrder, setDataOrder }) => {
     return currentPrice;
   };
   const handelChangeStatus = () => {
-    onChange();
+    // const product =
+    const products = [];
+    CartData.map((cart) =>
+      products.push({
+        idUser: idUser,
+        amount: cart.amount,
+        id_product: cart.idProduct,
+      })
+    );
+    const data = {
+      sex: dataOrder.sex === "Anh" ? "FEMALE" : "MALE",
+      address:
+        dataOrder.homeAddress +
+        ", " +
+        dataOrder.ward.name +
+        ", " +
+        dataOrder.district.name +
+        ", " +
+        dataOrder.city.name,
+      isPay: false,
+      name: dataOrder.name,
+      paymentType: typePayment,
+      phoneNumber: dataOrder.phoneNumber,
+      priceDelivery: 100000,
+      idUser: idUser,
+      discountCode: applyDiscount.code,
+      products: products,
+    };
+    const fetchAPI = async () => {
+      const res = await createBillService(data);
+      if (res.status === 200) {
+        toast.success("Tạo bill thành công");
+        setDataBill(res.data);
+        onChange();
+      } else {
+        toast.error("Lỗi không tạo được bill");
+      }
+    };
+    fetchAPI();
   };
   return (
     <div className="p-2">
@@ -173,7 +229,7 @@ const PaymentInfor = ({ Data, onChange, dataOrder, setDataOrder }) => {
         <div className="flex items-start mt-2">
           <div className="font-semibold w-1/4">Địa chỉ nhận hàng:</div>
           <div className=" font-medium w-3/4">
-            {dataOrder.addressHome +
+            {dataOrder.homeAddress +
               ", " +
               dataOrder.ward.name +
               ", " +
@@ -185,7 +241,7 @@ const PaymentInfor = ({ Data, onChange, dataOrder, setDataOrder }) => {
         <div className="flex items-start mt-2">
           <div className="font-semibold  w-1/4">Tạm tính:</div>
           <div className="font-bold text-red-500  w-3/4">
-            {convertMoney(Data.totalPrice)}
+            {convertMoney(totalOrder)}
           </div>
         </div>
         <div className="flex items-start mt-2">
@@ -211,8 +267,8 @@ const PaymentInfor = ({ Data, onChange, dataOrder, setDataOrder }) => {
             <input
               id={item.typeName}
               type="radio"
-              checked={typePayment === item.id}
-              onChange={() => setTypePayment(item.id)}
+              checked={typePayment === item.code}
+              onChange={() => setTypePayment(item.code)}
             />
             {item.icon}
             <span className="">{item.typeName}</span>
@@ -266,11 +322,15 @@ const PaymentInfor = ({ Data, onChange, dataOrder, setDataOrder }) => {
                 <div className="text-sm font-medium">
                   <p>
                     Giảm
-                    <span className="ml-1">{convertMoney(code.reduce)}</span>
+                    <span className="ml-1">
+                      {convertMoney(code.reduce_price)}
+                    </span>
                   </p>
                   <p>
                     Đơn hàng từ:
-                    <span className="ml-1">{convertMoney(code.condition)}</span>
+                    <span className="ml-1">
+                      {convertMoney(code.condition_price)}
+                    </span>
                   </p>
                   <p className="flex items-center">
                     Mã:
@@ -290,7 +350,7 @@ const PaymentInfor = ({ Data, onChange, dataOrder, setDataOrder }) => {
                   <div className="w-full flex items-center justify-end">
                     <Popover
                       trigger={"hover"}
-                      className="w-fit"
+                      className="w-full"
                       content={() => contentPopover(code)}
                     >
                       <ErrorOutlineIcon className="cursor-pointer" />
@@ -342,7 +402,7 @@ const PaymentInfor = ({ Data, onChange, dataOrder, setDataOrder }) => {
         <div className="flex justify-between items-center mt-3">
           <p className="font-semibold text-lg">Tổng tiền:</p>
           <p className="text-red-500 font-bold text-xl">
-            {convertMoney(finalPrice(Data.totalPrice))}
+            {convertMoney(finalPrice(totalOrder))}
           </p>
         </div>
         <button

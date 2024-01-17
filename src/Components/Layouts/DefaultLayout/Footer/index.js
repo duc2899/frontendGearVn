@@ -11,35 +11,122 @@ import ship1 from "./Image/ship_1.webp";
 import ship2 from "./Image/ship_2.webp";
 import ship3 from "./Image/ship_3.webp";
 import ship4 from "./Image/ship_4.webp";
+import facebook from "./Image/facebook.png";
+import tikTok from "./Image/tiktok.png";
+import youtube from "./Image/youtube.png";
+import group from "./Image/user.png";
+import logoBCT from "./Image/logo-bct.webp";
 function Footer(props) {
+  const ICON_CONNECT_WITH_US = [
+    {
+      icon: facebook,
+      href: "https://www.facebook.com/gearvnhcm",
+    },
+    {
+      icon: tikTok,
+      href: "https://www.tiktok.com/@gearvn.store",
+    },
+    {
+      icon: youtube,
+      href: "https://www.youtube.com/@GEARVNOficial",
+    },
+    {
+      icon: group,
+      href: "https://www.facebook.com/groups/VietnamGamingConner",
+    },
+  ];
   return (
-    <footer className="w-full bg-white mt-2">
-      <div className="mx-auto max-w-7xl lg:px-8 p-2">
-        <div className="flex flex-wrap gap-x-28 gap-y-5 justify-between -mr-6 sm: mr-0">
-          <div>
+    <footer className="w-full bg-white mt-6">
+      <div className="mx-auto max-w-7xl px-8 p-2 py-8">
+        <div className="grid grid-flow-row-dense lg:grid-cols-6 md:grid-cols-3 grid-cols-1 gap-4">
+          <div className="col-span-1">
             <h2 className="font-bold">VỀ GEARVN</h2>
-            <div>
-              <p>Giới thiệu</p>
-              <p>Tuyển dụng</p>
+            <div className="font-semibold text-sm">
+              <p className="hover:text-red-400 hover:underline transition-colors cursor-pointer">
+                Giới thiệu
+              </p>
+              <p className="hover:text-red-400 hover:underline transition-colors cursor-pointer">
+                Tuyển dụng
+              </p>
             </div>
           </div>
-          <div>
+          <div className="col-span-1">
             <h2 className="font-bold">CHÍNH SÁCH</h2>
-            <div>
-              <p>Chính sách bảo hành</p>
-              <p>Chính sách thanh toán</p>
-              <p>Chính sách giao hàng</p>
-              <p>Chính sách bảo mật</p>
+            <div className="font-semibold text-sm">
+              <p className="hover:text-red-400 hover:underline transition-colors cursor-pointer">
+                Chính sách bảo hành
+              </p>
+              <p className="hover:text-red-400 hover:underline transition-colors cursor-pointer">
+                Chính sách thanh toán
+              </p>
+              <p className="hover:text-red-400 hover:underline transition-colors cursor-pointer">
+                Chính sách giao hàng
+              </p>
+              <p className="hover:text-red-400 hover:underline transition-colors cursor-pointer">
+                Chính sách bảo mật
+              </p>
             </div>
           </div>
-          <div>
+          <div className="col-span-1">
             <h2 className="font-bold">THÔNG TIN</h2>
-            <div>
-              <p>Hệ thống cửa hàng</p>
-              <p>Trung tâm bảo hành</p>
+            <div className="font-semibold text-sm">
+              <p className="hover:text-red-400 hover:underline transition-colors cursor-pointer">
+                Hệ thống bảo hành
+              </p>
+              <p className="hover:text-red-400 hover:underline transition-colors cursor-pointer">
+                Trung tâm bảo hành
+              </p>
+              <p className="hover:text-red-400 hover:underline transition-colors cursor-pointer">
+                Tra cứu địa chỉ bảo hành
+              </p>
             </div>
           </div>
-          <div>
+          <div className="col-span-1">
+            <h2 className="font-bold">TỔNG ĐÀI HỖ TRỢ(MIỄN PHÍ)</h2>
+            <div className="font-semibold text-sm">
+              <p>
+                Gọi mua:
+                <a
+                  href="tel:18886975"
+                  className="text-blue-500 ml-2 font-semibold"
+                >
+                  1800.6975
+                </a>{" "}
+                (8:00 - 21:00)
+              </p>
+              <p>
+                Email:
+                <a
+                  href="tel:18886173"
+                  className="text-blue-500 ml-2 font-semibold"
+                >
+                  1800.6173
+                </a>{" "}
+                (8:00 - 21:00)
+              </p>
+              <p>
+                CSKH:
+                <a
+                  href="mailto:cskh@gearvn.com"
+                  className="text-blue-500 ml-2 font-semibold"
+                >
+                  cskh@gearvn.com
+                </a>
+              </p>
+            </div>
+          </div>
+          <div className="col-span-1">
+            <h2 className="font-bold">THÔNG TIN</h2>
+            <div className="font-semibold text-sm">
+              <p className="hover:text-red-400 hover:underline transition-colors cursor-pointer">
+                Hệ thống cửa hàng
+              </p>
+              <p className="hover:text-red-400 hover:underline transition-colors cursor-pointer">
+                Trung tâm bảo hành
+              </p>
+            </div>
+          </div>
+          <div className="col-span-1">
             <div>
               <h2 className="font-bold">ĐƠN VỊ VẬN CHUYỂN</h2>
               <div className="flex items-center">
@@ -111,6 +198,19 @@ function Footer(props) {
               </div>
             </div>
           </div>
+        </div>
+        <div className="border-t-2 pt-6 flex items-center justify-between md:flex-row flex-col">
+          <div className="flex items-center justify-between gap-2">
+            <p className="font-semibold">KẾT NỐI VỚI CHÚNG TÔI</p>
+            <div className="flex items-center gap-2">
+              {ICON_CONNECT_WITH_US.map((item, i) => (
+                <a href={item.href} key={i}>
+                  <img src={item.icon} alt="hihi" className="w-8"></img>
+                </a>
+              ))}
+            </div>
+          </div>
+          <img src={logoBCT} alt="" className="w-36" />
         </div>
       </div>
     </footer>

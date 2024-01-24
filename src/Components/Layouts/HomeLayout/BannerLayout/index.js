@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import { getImageBanner } from "../../../Services/ProductsServices/GetImagesBanner";
+import { Carousel } from "antd";
 const IMAGES = [
   {
     id: 0,
@@ -29,54 +31,29 @@ const IMAGES = [
   },
 ];
 function BannerLayout(props) {
-  const [slide, setSlide] = useState(0);
-  const nextImage = () => {
-    setSlide(IMAGES.length - 1 === slide ? 0 : slide + 1);
-  };
-  const prevImage = () => {
-    setSlide(slide === 0 ? IMAGES.length - 1 : slide - 1);
-  };
+  const [dataImage, setDataImage] = useState([]);
   useEffect(() => {
-    const loop = setInterval(() => {
-      setSlide(IMAGES.length - 1 === slide ? 0 : slide + 1);
-    }, 3000);
-    return () => clearInterval(loop);
-  }, [slide]);
+    const fetchAPI = async () => {
+      const res = await getImageBanner(5);
+      setDataImage(res);
+    };
+    // fetchAPI()
+  }, []);
 
   return (
     <div className="basis-auto sm">
       <div className="grid grid-cols-3 gap-y-3">
-        <div className="flex overflow-hidden relative col-span-3 lg:col-span-2">
-          <KeyboardArrowLeftIcon
-            onClick={prevImage}
-            className="text-red-600 absolute top-1/2 left-2 w-10 h-10 cursor-pointer -translate-y-1/2 "
-          ></KeyboardArrowLeftIcon>
-          {IMAGES.map((image, index) => (
-            <img
-              key={image.id}
-              src={image.url}
-              alt={image.alt}
-              className={`transition-all rounded-lg ${
-                image.id === slide ? "block w-full object-cover" : "hidden"
-              }`}
-            />
-          ))}
-          <span className="absolute bottom-2 flex gap-5 left-1/2 -translate-x-1/2">
-            {IMAGES.map((item) => (
-              <button
-                key={item.id}
-                className={`block transition-all rounded-sm space-x-2 h-1 text-transparent lg:w-9 w-2 ${
-                  item.id === slide ? "bg-red-600" : "bg-gray-500"
-                }`}
-              >
-                {item.id}
-              </button>
+        <div className="col-span-3 lg:col-span-2">
+          <Carousel autoplay>
+            {IMAGES.map((image) => (
+              <img
+                key={image.id}
+                src={image.url}
+                className="rounded-md w-full object-contain h-auto"
+                alt={image.alt}
+              />
             ))}
-          </span>
-          <KeyboardArrowRightIcon
-            className="text-red-600 absolute top-1/2 right-2 w-10 h-10 cursor-pointer -translate-y-1/2"
-            onClick={nextImage}
-          ></KeyboardArrowRightIcon>
+          </Carousel>
         </div>
         <div className="row-span-1 lg:flex lg:justify-around lg:gap-2 lg:flex-col hidden pl-3">
           <img

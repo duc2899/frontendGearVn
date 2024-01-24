@@ -2,14 +2,11 @@ import React, { useEffect, useRef, useState } from "react";
 import successOrder from "../../StoreIcons/OrderSuccess.png";
 import convertMoney from "../../../Utils/ConvertMoney";
 import priceSale from "../../../Utils/ConvertPriceSale";
-import PrintIcon from "@mui/icons-material/Print";
 import { useReactToPrint } from "react-to-print";
-import { useNavigate } from "react-router-dom";
 import logoGearVN from "../../StoreIcons/LogoGearvn.png";
 import "./fireWork.css";
 
 function SuccessOrder({ dataBill }) {
-  const navigate = useNavigate();
   const [fireWork, setShowFireWork] = useState(true);
   useEffect(() => {
     const timeShowFireWork = setTimeout(() => {
@@ -23,7 +20,7 @@ function SuccessOrder({ dataBill }) {
     content: () => PDFRef.current,
   });
   const handelGoToHome = () => {
-    navigate("/");
+    window.location.href = window.location.origin;
   };
   return (
     <div className="p-2">
@@ -58,7 +55,7 @@ function SuccessOrder({ dataBill }) {
         </div>
         <div className="flex border items-center justify-center flex-col">
           <div className="p-2 w-full flex items-center justify-between">
-            <p className=" font-semibold text-xl">Đơn hàng #{dataBill.id}</p>
+            <p className=" font-semibold text-xl">Mã Đơn hàng #{dataBill.id}</p>
             <p className=" font-normal text-sm">{dataBill.createdDate}</p>
           </div>
           <div className="w-full border-b-1px border-t-1px">
@@ -118,6 +115,10 @@ function SuccessOrder({ dataBill }) {
               <p className="">{dataBill.name}</p>
             </div>
             <div className="flex items-center justify-between w-full">
+              <p className="font-medium">Giới tính</p>
+              <p className="">{dataBill.sex === "FEMALE" ? "Chị" : "Anh"}</p>
+            </div>
+            <div className="flex items-center justify-between w-full">
               <p className="font-medium">Số điện thoại </p>
               <p className="">{dataBill.phoneNumber}</p>
             </div>
@@ -138,7 +139,11 @@ function SuccessOrder({ dataBill }) {
             </p>
             <div className="flex items-center justify-between w-full">
               <p className="font-medium">Phương thức thanh toán</p>
-              <p className="">{dataBill.paymentType}</p>
+              <p className="">
+                {dataBill.paymentType === "COD"
+                  ? "Thanh toán khi nhận hàng (COD)"
+                  : "Thanh toán trực tuyến (ONLINE)"}
+              </p>
             </div>
             <div className="flex items-center justify-between w-full">
               <p className="font-medium">Thanh toán</p>
@@ -153,14 +158,13 @@ function SuccessOrder({ dataBill }) {
         <div className="w-full flex items-center justify-center gap-4 ">
           <button
             onClick={handelToPrintf}
-            className="p-2 rounded-md bg-gray-400 text-white hover:opacity-70 transition-all"
+            className="p-2 rounded-md bg-gray-400 font-medium text-white hover:opacity-70 transition-all w-36"
           >
             In
-            <PrintIcon></PrintIcon>
           </button>
           <button
             onClick={handelGoToHome}
-            className="p-2 rounded-md bg-blue-500 text-white hover:opacity-70 transition-all"
+            className="p-2 rounded-md bg-blue-500 text-white hover:opacity-70 transition-all w-40"
           >
             Quay về trang chủ
           </button>

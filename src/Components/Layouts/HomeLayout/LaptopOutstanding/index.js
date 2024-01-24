@@ -39,11 +39,11 @@ function LaptopOutstanding(props) {
   };
   return (
     <div className="bg-white mt-3 p-6 rounded-md">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between mb-2">
         <h1 className="text-3xl font-semibold mb-2">Laptop bán chạy</h1>
         <p
           onClick={() => navigate("/collections/laptop")}
-          className="text-blue-500 hover:opacity-70 cursor-pointer"
+          className="text-blue-500 hover:opacity-70 cursor-pointer title"
         >
           Xem tất cả
         </p>
@@ -52,10 +52,10 @@ function LaptopOutstanding(props) {
         <Carousel
           responsive={responsive}
           ssr={true} // means to render carousel on server-side.
-          infinite={false}
+          infinite={true}
           slidesToSlide={1}
           autoPlay={false}
-          autoPlaySpeed={4000}
+          autoPlaySpeed={2000}
           keyBoardControl={true}
           customTransition="transform 300ms ease-in-out"
           transitionDuration={500}

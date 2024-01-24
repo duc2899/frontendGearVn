@@ -13,7 +13,7 @@ const ProductSearch = () => {
   const [data, setData] = useState([]);
   const val = useDebounced(search);
   useEffect(() => {
-    if (val) {
+    if (val.trim() && !containsSpecialCharacter(val.trim())) {
       const fetchAPI = async () => {
         const res = await getProductByName(val);
         setData(res);
@@ -37,6 +37,11 @@ const ProductSearch = () => {
       setShow(true);
     }
   };
+  const containsSpecialCharacter = (str) => {
+    var regex = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
+    return regex.test(str);
+  };
+
   return (
     <div
       onBlur={() => setShow(false)}
@@ -53,7 +58,7 @@ const ProductSearch = () => {
       <div
         className={`${
           show ? "block" : "hidden"
-        } absolute inset-x-0 bg-white rounded-md shadow-md h-52 overflow-auto`}
+        } absolute inset-x-0 bg-white rounded-md shadow-md h-52 overflow-auto transition-transform`}
         style={{ bottom: "-210px" }}
       >
         {data.length > 0 ? (

@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import starImage from "../../StoreIcons/star.png";
 import _ from "lodash";
 import ModalFeedback from "./ModalFeedback";
 import CalculateStars from "../../../Utils/CalculateStars";
+import { UserContext } from "../../../Context/AccountUser";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 function BlockFeedback({ data, idUser, setData }) {
+  const { isLogin } = useContext(UserContext);
   const [openFeedback, setOpenFeedback] = useState(false);
   const findStarInFeedback = (dataStars, star) => {
     let count = 0;
@@ -14,12 +18,28 @@ function BlockFeedback({ data, idUser, setData }) {
     });
     return count;
   };
+  const calculatorPercent = (dataStars, star) => {
+    let count = 0;
+    dataStars.map((dataStar) => {
+      if (dataStar.star === star) {
+        count++;
+      }
+    });
+    return count / dataStars.length;
+  };
+  const handelOpenFeedback = () => {
+    if (isLogin) {
+      setOpenFeedback(true);
+    } else {
+      toast.error("Vui lòng đăng nhập để gửi đánh giá");
+    }
+  };
   return (
     <div className="bg-white rounded-md mt-2 flex gap-x-3 flex-col p-5">
       <h2 className="text-2xl font-semibold mb-3">
         Đánh giá & Nhận xét {data.title}
       </h2>
-      <div className="flex items-center justify-center gap-x-10 lg:flex-row flex-col">
+      <div className="flex items-center justify-center gap-x-10 lg:flex-row flex-col mb-3">
         <div className="flex items-center flex-col">
           {data.dataFeedback && (
             <p className="flex text-3xl font-semibold text-red-600 items-center">
@@ -45,12 +65,17 @@ function BlockFeedback({ data, idUser, setData }) {
                 />
               </p>
               <div
-                className={`h-3 lg:w-96 w-40 rounded-md  ${
-                  findStarInFeedback(data.dataFeedback, i + 1) === 0
-                    ? "bg-gray-300"
-                    : "bg-green-500"
-                }`}
-              ></div>
+                className={`h-3 relative lg:w-96 w-40 rounded-md bg-gray-300`}
+              >
+                <div
+                  style={{
+                    width: `${
+                      calculatorPercent(data.dataFeedback, i + 1) * 100
+                    }%`,
+                  }}
+                  className={`h-3 absolute rounded-md bg-green-400`}
+                ></div>
+              </div>
               <div>
                 ({findStarInFeedback(data.dataFeedback, i + 1)} đánh giá)
               </div>
@@ -58,7 +83,7 @@ function BlockFeedback({ data, idUser, setData }) {
           ))}
         </div>
       </div>
-      <div>
+      <div className="border-t-2 pt-4">
         <h2 className="font-semibold text-2xl" id="comment">
           Nhận xét:
         </h2>
@@ -90,7 +115,7 @@ function BlockFeedback({ data, idUser, setData }) {
       </div>
 
       <button
-        onClick={() => setOpenFeedback(true)}
+        onClick={handelOpenFeedback}
         className="bg-blue-500 p-2 w-1/3 rounded-md text-white font-semibold hover:opacity-90 mt-2"
       >
         Gửi đánh giá của bạn

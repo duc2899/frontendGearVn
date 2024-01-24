@@ -22,7 +22,7 @@ function BlockImagePreview({ PreviewImages }) {
     }
   });
   return (
-    <div className="p-5 lg:w-4/12 w-full">
+    <div className="p-5 lg:w-5/12 w-full">
       <div>
         <img
           className="w-fit h-fit object-cover cursor-zoom-in"
@@ -43,7 +43,7 @@ function BlockImagePreview({ PreviewImages }) {
           ></div>
         )}
       </div>
-      <div className="flex items-center lg:justify-start justify-center gap-x-3">
+      <div className="flex items-center  justify-center gap-x-3">
         {PreviewImages.map((image, index) => (
           <img
             onClick={() => setCurrImage(index)}

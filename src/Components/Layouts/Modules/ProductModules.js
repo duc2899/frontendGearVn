@@ -95,17 +95,17 @@ function ProductModules({ data, type }) {
           <img
             src={data.image}
             alt="hêlo"
-            className="w-52 h-52 object-cover hover:scale-115 overflow-hidden transition-all"
+            className="w-52 h-52 object-cover hover:scale-115 overflow-hidden transition-all "
           />
         </Link>
         <Link
           to={`/details/laptop/${data.id}`}
-          className="break-words font-semibold text-sm leading-3 hover:text-red-500 "
+          className="break-words font-semibold text-sm hover:text-red-500 title"
         >
           {data.title}
         </Link>
       </div>
-      <div className="bg-gray-300 flex flex-wrap p-2 rounded-md gap-1">
+      <div className="bg-gray-300 flex flex-wrap p-2 rounded-md gap-1 mt-2">
         {filterData.map((laptop) =>
           test[0].icons.map(
             (icon) =>
@@ -123,7 +123,9 @@ function ProductModules({ data, type }) {
         )}
       </div>
       <div>
-        {data.saleRate > 0 && <del>{convertMoney(data.oldPrice)}</del>}
+        {data.saleRate > 0 && (
+          <del className="text-gray-400">{convertMoney(data.oldPrice)}</del>
+        )}
 
         <div className={`${data.saleRate <= 0 && "mt-6"}`}>
           <span className="text-red-600 font-semibold mr-2">

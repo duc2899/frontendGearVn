@@ -6,11 +6,12 @@ import { getInforUserService } from "../../Services/AccountServices/GetInforUser
 import DeleteCookie from "../../Utils/Cookie/DeleteCookie";
 export const UserContext = createContext(null);
 const AccountUserContext = ({ children }) => {
+  const [reload, setReload] = useState(false);
   const [userAccount, setUserAccount] = useState({});
   const [isLogin, setIsLogin] = useState(false);
-  const value = { userAccount, setUserAccount, isLogin, setIsLogin };
+  const value = { userAccount, setUserAccount, isLogin, setIsLogin, setReload };
   useEffect(() => {
-    if (GetCookie("user")) {
+    if (GetCookie("user") || reload) {
       const fetchAPICheckToken = async () => {
         const result = await checkTokenService({
           token: GetCookie("user").token,
@@ -31,10 +32,11 @@ const AccountUserContext = ({ children }) => {
         }
       };
       fetchAPICheckToken();
+      setReload(false);
     } else {
       setIsLogin(false);
     }
-  }, []);
+  }, [reload]);
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 };
 

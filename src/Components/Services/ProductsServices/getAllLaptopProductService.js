@@ -2,7 +2,7 @@ import * as httpRequest from "../../HttpRequest/httpRequest";
 
 export const getAllLaptopProduct = async (page, size) => {
   try {
-    const res = await httpRequest.get("/public/user/laptopProduct", {
+    const res = await httpRequest.get("/public/user/product/laptop", {
       params: {
         page,
         size,

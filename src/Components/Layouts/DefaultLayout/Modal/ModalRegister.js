@@ -255,16 +255,13 @@ function ModalRegister({ open, setOpen, setLogin }) {
                   *Vui lòng nhập mật khẩu
                 </p>
               )}
-              {errors.password?.type === "maxLength" && (
+              {(errors.password?.type === "maxLength" ||
+                errors.password?.type === "minLength") && (
                 <span className="text-red-500 font-normal">
                   Mật khẩu phải từ 3 đến 15 ký tự
                 </span>
               )}
-              {errors.password?.type === "minLength" && (
-                <span className="text-red-500 font-normal">
-                  Mật khẩu phải từ 3 đến 15 ký tự
-                </span>
-              )}
+
               {password.length !== 0 && message !== "" && (
                 <p
                   style={{

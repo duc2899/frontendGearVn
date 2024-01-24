@@ -106,7 +106,7 @@ function KeyboardCollections(props) {
   };
   return (
     <div className="bg-white mt-3 p-6 rounded-md">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between mb-2">
         <h1 className="text-3xl font-semibold mb-2">Bàn phím bán chạy</h1>
         <p
           onClick={() => navigate("/collections/keyboard")}

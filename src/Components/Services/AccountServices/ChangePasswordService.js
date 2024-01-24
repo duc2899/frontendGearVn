@@ -1,6 +1,6 @@
 import * as httpRequest from "../../HttpRequest/httpRequest";
 
-export const checkPasswordService = async (data) => {
+export const changePasswordService = async (data) => {
   try {
     const res = await httpRequest.post(`/public/changePassword`, {
       ...data,

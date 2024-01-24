@@ -6,6 +6,7 @@ import priceSale from "../../../Utils/ConvertPriceSale";
 import useDebounced from "../../../hooks/useDebounced";
 import emptyProduct from "../../StoreIcons/boxEmpty.png";
 import { getBillService } from "../../../Services/BIllServices/GetBillService";
+
 const { Search } = Input;
 const items = [
   {
@@ -141,9 +142,26 @@ function OrderManager({ idUser, setTab, setDetailOrder }) {
           orders.map((order) => (
             <div key={order.id} className="mt-5">
               <div className="flex items-center justify-between">
-                <span className="font-medium">
+                <span className="font-medium flex items-center gap-2 text-lg">
                   Mã đơn hàng:{" "}
-                  <span className="text-orange-500 ">#{order.id}</span>
+                  <span className="text-orange-500 flex items-center">
+                    #{order.id}
+                    <span>
+                      {order.isCancelOrder ? (
+                        <div className="text-red-500 font-semibold">
+                          - Đơn hàng đã bị hủy
+                        </div>
+                      ) : (
+                        <div
+                          className={`${
+                            STATUS_ORDER[order.statusBill - 1].color
+                          } ml-3 font-semibold`}
+                        >
+                          - {STATUS_ORDER[order.statusBill - 1].name}
+                        </div>
+                      )}
+                    </span>
+                  </span>
                 </span>
                 <div className="flex items-center gap-2">
                   <button
@@ -152,19 +170,6 @@ function OrderManager({ idUser, setTab, setDetailOrder }) {
                   >
                     Xem chi tiết
                   </button>
-                  {order.isCancelOrder ? (
-                    <div className="text-red-500 ml-3 font-semibold">
-                      Đơn hàng đã bị hủy
-                    </div>
-                  ) : (
-                    <div
-                      className={`${
-                        STATUS_ORDER[order.statusBill - 1].color
-                      } ml-3 font-semibold`}
-                    >
-                      {STATUS_ORDER[order.statusBill - 1].name}
-                    </div>
-                  )}
                 </div>
               </div>
               <div>

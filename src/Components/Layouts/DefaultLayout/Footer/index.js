@@ -36,9 +36,9 @@ function Footer(props) {
     },
   ];
   return (
-    <footer className="w-full bg-white mt-6">
+    <footer className="w-full bg-white">
       <div className="mx-auto max-w-7xl px-8 p-2 py-8">
-        <div className="grid grid-flow-row-dense lg:grid-cols-6 md:grid-cols-3 grid-cols-1 gap-4">
+        <div className="grid grid-flow-row-dense lg:grid-cols-5 md:grid-cols-3 grid-cols-1 gap-4">
           <div className="col-span-1">
             <h2 className="font-bold">VỀ GEARVN</h2>
             <div className="font-semibold text-sm">
@@ -71,7 +71,7 @@ function Footer(props) {
             <h2 className="font-bold">THÔNG TIN</h2>
             <div className="font-semibold text-sm">
               <p className="hover:text-red-400 hover:underline transition-colors cursor-pointer">
-                Hệ thống bảo hành
+                Hệ thống CỬA HÀNG
               </p>
               <p className="hover:text-red-400 hover:underline transition-colors cursor-pointer">
                 Trung tâm bảo hành
@@ -115,18 +115,7 @@ function Footer(props) {
               </p>
             </div>
           </div>
-          <div className="col-span-1">
-            <h2 className="font-bold">THÔNG TIN</h2>
-            <div className="font-semibold text-sm">
-              <p className="hover:text-red-400 hover:underline transition-colors cursor-pointer">
-                Hệ thống cửa hàng
-              </p>
-              <p className="hover:text-red-400 hover:underline transition-colors cursor-pointer">
-                Trung tâm bảo hành
-              </p>
-            </div>
-          </div>
-          <div className="col-span-1">
+          <div className="col-span-1 ml-4">
             <div>
               <h2 className="font-bold">ĐƠN VỊ VẬN CHUYỂN</h2>
               <div className="flex items-center">

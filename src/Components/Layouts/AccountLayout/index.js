@@ -86,13 +86,13 @@ const MENU_LOGIN = [
 ];
 
 function AccountLayout(props) {
-  const { userAccount } = useContext(UserContext);
+  const { userAccount, setReload } = useContext(UserContext);
   const [tab, setTab] = useState(
     window.location.href.charAt(window.location.href.length - 1)
   );
   const [detailOrder, setDetailOrder] = useState(null);
   const MENU_OPTIONS = [
-    <AccountInfo Data={userAccount}></AccountInfo>,
+    <AccountInfo Data={userAccount} setReload={setReload}></AccountInfo>,
     <AddressNote idUser={userAccount.id}></AddressNote>,
     <OrderManager
       idUser={userAccount.id}
@@ -120,7 +120,7 @@ function AccountLayout(props) {
                 clipRule="evenodd"
               />
             </svg>
-            <h2 className="font-semibold ml-2">Bui Duc</h2>
+            <h2 className="font-semibold ml-2">{userAccount.userName}</h2>
           </div>
           <div className="flex flex-col justify-center gap-y-3 mt-3">
             {MENU_LOGIN.map((item) => (

@@ -14,7 +14,7 @@ import ModalLogin from "../DefaultLayout/Modal/ModalLogin";
 import { actionCartService } from "../../Services/CartServices/ActionsCartService";
 import { CartUserProvider } from "../../Context/CartUser";
 function DetailLayout(props) {
-  const { isLogin, userAccount } = useContext(UserContext);
+  const { isLogin, userAccount, setReload } = useContext(UserContext);
   const { setShowCart } = useContext(CartUserProvider);
   const [open, setOpen] = useState(false);
   const location = window.location.pathname.split("/");
@@ -41,6 +41,7 @@ function DetailLayout(props) {
         });
         if (res.status === 200) {
           setShowCart(true);
+          setReload(true);
         }
       };
       fetchAPI();
@@ -77,7 +78,7 @@ function DetailLayout(props) {
               PreviewImages={data.previewImages}
             ></BlockImagePreview>
           )}
-          <div className="border-l-2 p-5 lg:w-8/12 w-full">
+          <div className="border-l-2 p-5 lg:w-7/12 w-full">
             <h2 className="text-2xl font-semibold">{data.title}</h2>
             <div className="flex gap-x-3 items-center">
               <div className="flex items-center">
@@ -110,7 +111,7 @@ function DetailLayout(props) {
                     onClick={() => handelAddToCart(data.id)}
                     className={`w-2/4 bg-red-600 rounded-md p-3 text-white text-lg font-semibold hover:opacity-90 transition-all`}
                   >
-                    MUA NGAY
+                    THÊM VÀO GIỎ HÀNG
                   </button>
                 ) : (
                   <button
@@ -123,7 +124,7 @@ function DetailLayout(props) {
               </div>
             </div>
             <div className="mt-3">
-              <h2 className="text-2xl font-semibold">Thống số kỹ thuật</h2>
+              <h2 className="text-xl font-semibold">Thống số kỹ thuật</h2>
               {data.properties && (
                 <table className="w-full mt-3">
                   <tbody>
@@ -140,19 +141,21 @@ function DetailLayout(props) {
               )}
             </div>
             <div className="mt-3">
-              <h2 className="text-2xl font-semibold">Mô tả sản phẩm</h2>
+              <h2 className="text-xl font-semibold">Mô tả sản phẩm</h2>
               <div className="text-base break-words">{data.description}</div>
             </div>
           </div>
         </div>
-        {/* block fedback */}
-        {data.dataFeedback && (
-          <BlockFeedback
-            data={data}
-            idUser={userAccount.id}
-            setData={setData}
-          ></BlockFeedback>
-        )}
+
+        <div>
+          {data.dataFeedback && (
+            <BlockFeedback
+              data={data}
+              idUser={userAccount.id}
+              setData={setData}
+            ></BlockFeedback>
+          )}
+        </div>
       </div>
       <ModalLogin open={open} setOpen={setOpen}></ModalLogin>
     </div>

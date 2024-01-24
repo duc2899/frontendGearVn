@@ -335,7 +335,7 @@ function OrderInfor({ onChange, setDataOrder, idUser, totalOrder }) {
               {convertMoney(totalOrder)}
             </p>
           </div>
-          <button className="p-3 w-full mt-2 bg-red-600 rounded-sm text-white font-semibold">
+          <button className="p-3 w-full mt-2 bg-red-600 rounded-sm text-white font-semibold hover:opacity-80 disabled:opacity-70 transition-opacity">
             ĐẶT HÀNG NGAY
           </button>
         </div>

@@ -45,7 +45,7 @@ function Header() {
         <LocationOnIcon className="md:text-white text-black m-3"></LocationOnIcon>
       ),
       title: "Hệ thống showroom",
-      href: "/#",
+      href: "/showRoom",
     },
     {
       icon: (

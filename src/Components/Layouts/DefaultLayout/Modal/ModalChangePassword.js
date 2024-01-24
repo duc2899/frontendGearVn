@@ -1,7 +1,7 @@
 import { Modal } from "antd";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { checkPasswordService } from "../../../Services/AccountServices/ChangePasswordService";
+import { changePasswordService } from "../../../Services/AccountServices/ChangePasswordService";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -47,7 +47,7 @@ function ModalChangePassword({ open, setOpen, email }) {
     return "red";
   };
   const onSubmit = async (data) => {
-    const res = await checkPasswordService({
+    const res = await changePasswordService({
       email: email,
       password: data.Password,
     });

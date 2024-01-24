@@ -3,6 +3,9 @@ import ModalAddress from "./ModalAddress";
 import { Popconfirm } from "antd";
 import { getAddressNoteService } from "../../../Services/AddressNoteServices/GetAddressNoteService";
 import { deleteAddressNoteService } from "../../../Services/AddressNoteServices/DeleteAddressNoteService";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 function AddressNote({ idUser }) {
   const [openModal, setOpenModal] = useState({
     isOpen: false,
@@ -33,8 +36,11 @@ function AddressNote({ idUser }) {
       const fetchAPI = async () => {
         const res = await getAddressNoteService(idUser);
         setData(res.data);
+        toast.success("Xóa địa chỉ thành công");
       };
       fetchAPI();
+    } else {
+      toast.error(res.message);
     }
   };
 

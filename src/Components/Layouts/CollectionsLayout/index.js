@@ -2,120 +2,18 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { HomeOutlined } from "@mui/icons-material";
 import { Dropdown, Popover } from "antd";
-import convertMoney from "../../Utils/ConvertMoney";
-import MultiRangeSlider from "multi-range-slider-react";
 import ProductModules from "../Modules/ProductModules";
-import { getAllLaptopProduct } from "../../Services/ProductsServices/getAllLaptopProductService";
+import { getAllProduct } from "../../Services/ProductsServices/GetAllProductService";
+import { Empty, Pagination } from "antd";
+import { searchCollectionService } from "../../Services/ProductsServices/SearchCollectionsService";
 function CollectionModules() {
-  const mouseData = [
-    {
-      id: "awefawe-123123dwdw",
-      title: "Chuột HP HYPERX Pulsefire Haste Black II",
-      type: "mouse",
-      image:
-        "https://product.hstatic.net/200000722513/product/b8a10-95ac-4e6d-9e50-2808c2959505__1__15430e9a7a954cd9a4427309477cb0df_e869da53af56496c9c74617366a28e2b_medium.png",
-      oldPrice: 1090000,
-      saleRate: 0.3,
-      quantity: 3,
-      properties: [
-        {
-          id: 1,
-          properties: "100 – 25.400",
-          name: "DPI",
-          isPublic: false,
-        },
-        {
-          id: 2,
-          properties: "125,0 x 63,5 x 40,0 mm",
-          name: "SIZE",
-          isPublic: false,
-        },
-        {
-          id: 3,
-          properties: "Co day",
-          name: "CONNECTION",
-          isPublic: true,
-        },
-        {
-          id: 4,
-          properties: "Co",
-          name: "RGB",
-          isPublic: true,
-        },
-        {
-          id: 5,
-          properties: "Co",
-          name: "CHARGER",
-          isPublic: true,
-        },
-        {
-          id: 6,
-          properties: "Black",
-          name: "COLOR",
-          isPublic: false,
-        },
-        {
-          id: 7,
-          properties: "Logitech",
-          name: "PRODUCER",
-          isPublic: false,
-        },
-      ],
-      dataFeedback: [
-        {
-          name: "Ho Tho Hoan",
-          createdAt: "2-7-2023",
-          star: 4,
-          message: "Đẹp",
-        },
-      ],
-      stars: [
-        {
-          star: 5,
-          count: 100,
-        },
-        {
-          star: 4,
-          count: 10,
-        },
-        {
-          star: 3,
-          count: 1,
-        },
-        {
-          star: 2,
-          count: 6,
-        },
-        {
-          star: 1,
-          count: 5,
-        },
-      ],
-    },
-  ];
-
-  const [res, setRes] = useState([]);
+  const [res, setRes] = useState({});
   const location = window.location.pathname.split("/");
-
+  const [page, setPage] = useState(0);
   useEffect(() => {
-    if (location[location.length - 1] === "laptop") {
-      const fetchAPI = async () => {
-        try {
-          const data = await getAllLaptopProduct(0, 4);
-          setRes(data.data);
-        } catch (err) {
-          console.log(err);
-        }
-      };
-      fetchAPI();
-      return;
-    } else if (location[location.length - 1] === "mouse") {
-      return setRes(mouseData);
-    } else if (location[location.length - 1] === "keyboard") {
-    } else {
-      console.log("12");
-    }
-  }, [location[location.length - 1]]);
+    fetchProductTotal(location[location.length - 1], page);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location[location.length - 1], page]);
 
   const Modules = ({ data }) => {
     if (location[location.length - 1] === "laptop") {
@@ -129,40 +27,37 @@ function CollectionModules() {
     }
   };
 
-  const filterLaptop = res[0]?.properties.filter(
-    (item) => item.isPublic === true
-  );
   const arr = [];
   const arrTitle = [];
   const arrItem = [];
-
   const [open, setOpen] = useState(1);
-  const [minValue, set_minValue] = useState(1000000);
-  const [maxValue, set_maxValue] = useState(9000000);
-
-  const [openPrice, setOpenPrice] = useState(false);
   const [filter, setFilter] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [sort, setSort] = useState(0);
-
   const [filterArr, setFilterArr] = useState([]);
+
   const items = [
     {
-      key: 0,
+      key: 1,
       label: <p className="font-semibold">Tăng dần</p>,
       name: "Giá tăng dần",
     },
     {
-      key: 1,
+      key: 2,
       label: <p className="font-semibold">Giảm dần</p>,
       name: "Giá giảm dần",
     },
   ];
+  // useEffect(() => {
+  //   if(sort){
+
+  //   }
+  // }, [sort])
   const handleOpenChange = (id) => {
     setOpen(id);
     setIsOpen(true);
   };
-  res.map((item) => {
+  res.data?.map((item) => {
     if (!arr.includes(item.properties[open - 1].properties)) {
       return arr.push(item.properties[open - 1].properties);
     }
@@ -212,13 +107,56 @@ function CollectionModules() {
     });
   }
 
-  const handleInput = (e) => {
-    set_minValue(e.minValue);
-    set_maxValue(e.maxValue);
-  };
   const handelClearFilter = () => {
     setFilterArr([]);
     setFilter(false);
+    fetchProductTotal(location[location.length - 1], page);
+  };
+
+  const handelChangePage = (data) => {
+    setPage(data - 1);
+  };
+
+  const handelResult = async () => {
+    if (filterArr.length > 0) {
+      const result = {};
+      filterArr.map((item) => (result[item.name.toLowerCase()] = item.value));
+      const fetchAPI = await searchCollectionService(
+        location[location.length - 1],
+        0,
+        4,
+        result
+      );
+      setRes(fetchAPI);
+    }
+  };
+  const fetchProductTotal = (type, page) => {
+    if (type === "laptop") {
+      const fetchAPI = async () => {
+        try {
+          const data = await getAllProduct("laptop", page, 15);
+          setRes(data);
+        } catch (err) {
+          console.log(err);
+        }
+      };
+      fetchAPI();
+      return;
+    } else if (type === "mouse") {
+      const fetchAPI = async () => {
+        try {
+          const data = await getAllProduct("mouse", page, 15);
+          setRes(data);
+        } catch (err) {
+          console.log(err);
+        }
+      };
+      fetchAPI();
+      return;
+    } else if (type === "keyboard") {
+    } else {
+      console.log("12");
+    }
   };
   return (
     <div>
@@ -236,7 +174,7 @@ function CollectionModules() {
             <span>{location[location.length - 1]} collections</span>
           </div>
           <div className="bg-white rounded-md mt-2 gap-x-3 p-5">
-            {res.length > 0 ? (
+            {Object.keys(res).length > 0 && res.data?.length > 0 ? (
               <>
                 <div className="flex items-center gap-x-3 flex-wrap lg:flex-nowrap  gap-y-4">
                   <Popover
@@ -310,10 +248,10 @@ function CollectionModules() {
                       Bộ lọc
                     </button>
                   </Popover>
-                  {filterLaptop.map((laptopProperty) => (
+                  {res?.data[0]?.properties.map((laptopProperty, index) => (
                     <Popover
                       content={
-                        <div className="lg:w-96 min-w-min">
+                        <div className="lg:w-96 min-w-min" key={index}>
                           <div className="mb-2 flex items-center gap-x-2">
                             {arr.map((item, index) => (
                               <button
@@ -339,7 +277,10 @@ function CollectionModules() {
                             >
                               Bỏ chọn
                             </button>
-                            <button className="bg-blue-600 p-2 rounded-md text-white ">
+                            <button
+                              onClick={handelResult}
+                              className="bg-blue-600 p-2 rounded-md text-white "
+                            >
                               Xem kết quả
                             </button>
                           </div>
@@ -377,7 +318,6 @@ function CollectionModules() {
                     </Popover>
                   ))}
                 </div>
-
                 <div className="w-full flex justify-start items-center lg:justify-end mt-3">
                   <Dropdown
                     menu={{
@@ -418,17 +358,24 @@ function CollectionModules() {
                   </Dropdown>
                 </div>
                 <div className="flex flex-wrap mt-3 gap-x-8 gap-y-8 lg:justify-stretch justify-center">
-                  {res.map((data, index) => (
-                    // <MouseModule key={index} data={data}></MouseModule>
+                  {res.data?.map((data, index) => (
                     <Modules data={data} key={index}></Modules>
                   ))}
                 </div>
+                {Object.keys(res).length > 0 && (
+                  <div className="flex items-center justify-center mt-5">
+                    <Pagination
+                      onChange={handelChangePage}
+                      defaultCurrent={1}
+                      total={res.totalElements}
+                      defaultPageSize={15}
+                    />
+                  </div>
+                )}
               </>
             ) : (
               <div className="flex items-center justify-center h-screen">
-                <p className="text-xl font-semibold">
-                  Hiện chưa có sản phẩm nào
-                </p>
+                <Empty description="Hiện chưa có sản phẩm nào"></Empty>
               </div>
             )}
           </div>

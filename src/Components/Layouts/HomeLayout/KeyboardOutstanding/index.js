@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import ProductModules from "../../Modules/ProductModules";
 import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
 import ArrowCircleLeftIcon from "@mui/icons-material/ArrowCircleLeft";
+import { getAllProduct } from "../../../Services/ProductsServices/GetAllProductService";
 import { useNavigate } from "react-router-dom";
 const MouseData = [
   {
@@ -87,6 +88,7 @@ const MouseData = [
 ];
 function KeyboardCollections(props) {
   const navigate = useNavigate();
+
   const responsive = {
     desktop: {
       breakpoint: { max: 3000, min: 1024 },

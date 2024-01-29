@@ -1,14 +1,20 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import starImage from "../../StoreIcons/star.png";
 import _ from "lodash";
 import ModalFeedback from "./ModalFeedback";
 import CalculateStars from "../../../Utils/CalculateStars";
 import { UserContext } from "../../../Context/AccountUser";
+import { getFeedbackByIdService } from "../../../Services/FeedbackServices/GetFeedbackByIdService";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Pagination } from "antd";
+import { Empty } from "antd";
+
 function BlockFeedback({ data, idUser, setData }) {
   const { isLogin } = useContext(UserContext);
   const [openFeedback, setOpenFeedback] = useState(false);
+  const [dataFeedback, setDataFeedback] = useState({});
+  const [page, setPage] = useState(0);
   const findStarInFeedback = (dataStars, star) => {
     let count = 0;
     dataStars.map((dataStar) => {
@@ -33,6 +39,16 @@ function BlockFeedback({ data, idUser, setData }) {
     } else {
       toast.error("Vui lòng đăng nhập để gửi đánh giá");
     }
+  };
+  useEffect(() => {
+    const fetchAPI = async () => {
+      const res = await getFeedbackByIdService(data.id, page, 5);
+      setDataFeedback(res.data);
+    };
+    fetchAPI();
+  }, [page, openFeedback]);
+  const handelChangePage = (data) => {
+    setPage(data - 1);
   };
   return (
     <div className="bg-white rounded-md mt-2 flex gap-x-3 flex-col p-5">
@@ -83,50 +99,70 @@ function BlockFeedback({ data, idUser, setData }) {
           ))}
         </div>
       </div>
-      <div className="border-t-2 pt-4">
-        <h2 className="font-semibold text-2xl" id="comment">
-          Nhận xét:
-        </h2>
-        {data.dataFeedback.map((feedback, i) => (
-          <div className="mt-2">
-            <div className="flex items-center gap-x-2">
-              <p className="font-semibold">{feedback.name}</p>
-              <span className="font-light text-gray-400">
-                {feedback.createdAt}
-              </span>
-            </div>
-            <div className="flex items-center mt-2">
-              <div className="flex items-center">
-                {_.times(feedback.star, (i) => {
-                  return (
-                    <img
-                      key={i}
-                      src={starImage}
-                      alt="star"
-                      className="w-3 h-3 object-cover"
-                    />
-                  );
-                })}
-                <p className="ml-5">{feedback.message}</p>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+      {isLogin && (
+        <div>
+          <div className="border-t-2 pt-4 ">
+            <h2 className="font-semibold text-2xl" id="comment">
+              Nhận xét:
+            </h2>
+            {Object.keys(dataFeedback).length > 0 &&
+            dataFeedback.data.length > 0 ? (
+              dataFeedback.data.toReversed().map((feedback, i) => (
+                <div className="mt-2 pl-3" key={i}>
+                  <div className="flex items-center gap-x-2">
+                    <p className="font-semibold">{feedback.name}</p>
+                    <span className="font-medium text-xs text-gray-600">
+                      {feedback.createdDate}
+                    </span>
+                  </div>
+                  <div className="flex items-center mt-2">
+                    <div className="flex items-center w-16">
+                      {_.times(feedback.star, (i) => {
+                        return (
+                          <img
+                            key={i}
+                            src={starImage}
+                            alt="star"
+                            className="w-3 h-3 object-cover"
+                          />
+                        );
+                      })}
+                    </div>
+                    <p className="ml-5">{feedback.message}</p>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <Empty description="Chưa có đánh giá nào"></Empty>
+            )}
 
-      <button
-        onClick={handelOpenFeedback}
-        className="bg-blue-500 p-2 w-1/3 rounded-md text-white font-semibold hover:opacity-90 mt-2"
-      >
-        Gửi đánh giá của bạn
-      </button>
-      {openFeedback && (
-        <ModalFeedback
-          data={data}
-          exitModal={setOpenFeedback}
-          idUser={idUser}
-          setData={setData}
-        ></ModalFeedback>
+            {Object.keys(dataFeedback).length > 0 &&
+              dataFeedback.data.length > 0 && (
+                <Pagination
+                  className="my-3 pl-3"
+                  onChange={handelChangePage}
+                  defaultCurrent={1}
+                  total={dataFeedback.totalElements}
+                  defaultPageSize={5}
+                />
+              )}
+          </div>
+
+          <button
+            onClick={handelOpenFeedback}
+            className="bg-blue-500 p-2 w-1/3 rounded-md text-white font-semibold hover:opacity-90 mt-2 pl-3"
+          >
+            Gửi đánh giá của bạn
+          </button>
+          {openFeedback && (
+            <ModalFeedback
+              data={data}
+              exitModal={setOpenFeedback}
+              idUser={idUser}
+              setData={setData}
+            ></ModalFeedback>
+          )}
+        </div>
       )}
     </div>
   );

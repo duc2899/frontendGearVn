@@ -91,7 +91,7 @@ function ProductModules({ data, type }) {
   return (
     <div className="p-2 w-52 border">
       <div>
-        <Link to={`/details/laptop/${data.id}`} className="mb-3">
+        <Link to={`/details/${type}/${data.id}`} className="mb-3">
           <img
             src={data.image}
             alt="hêlo"
@@ -99,7 +99,7 @@ function ProductModules({ data, type }) {
           />
         </Link>
         <Link
-          to={`/details/laptop/${data.id}`}
+          to={`/details/${type}/${data.id}`}
           className="break-words font-semibold text-sm hover:text-red-500 title"
         >
           {data.title}

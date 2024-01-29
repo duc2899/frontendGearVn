@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import ProductModules from "../../Modules/ProductModules";
-import * as getAllLaptopProductService from "../../../Services/ProductsServices/getAllLaptopProductService";
+import { getAllProduct } from "../../../Services/ProductsServices/GetAllProductService";
 import { useNavigate } from "react-router-dom";
 import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
 import ArrowCircleLeftIcon from "@mui/icons-material/ArrowCircleLeft";
@@ -12,7 +12,7 @@ function LaptopOutstanding(props) {
   useEffect(() => {
     const fetchAPI = async () => {
       try {
-        const data = await getAllLaptopProductService.getAllLaptopProduct(0, 4);
+        const data = await getAllProduct("laptop", 0, 4);
         setLaptopData(data.data);
       } catch (err) {
         console.log(err);

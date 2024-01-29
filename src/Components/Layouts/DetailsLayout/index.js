@@ -20,9 +20,10 @@ function DetailLayout(props) {
   const location = window.location.pathname.split("/");
   const [data, setData] = useState({});
   useEffect(() => {
+    console.log(location);
     const fetchAPI = async () => {
       try {
-        const res = await getProductByID(location[3]);
+        const res = await getProductByID(location[2], location[3]);
         setData(res);
       } catch (err) {
         console.log(err);

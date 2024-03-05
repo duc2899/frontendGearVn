@@ -22,7 +22,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 function Header() {
   const { isLogin, userAccount } = useContext(UserContext);
-  const { showCart, setShowCart } = useContext(CartUserProvider);
+  const { showCart, setShowCart, productCart } = useContext(CartUserProvider);
 
   useEffect(() => {
     if (showCart) {
@@ -66,11 +66,11 @@ function Header() {
                   <img
                     alt="hi"
                     className="w-14 h-14 object-cover"
-                    src="https://product.hstatic.net/200000722513/product/4a46d43e4b82391209328e195_large_7fa59a1a8ef14c37b78bc34161b45a87_large_3c00edfcc07d4928b682a0f675620c81_grande.png"
+                    src={productCart.image}
                   ></img>
                 </div>
                 <h2 className="justify-items-center ml-2">
-                  Laptop gaming ASUS TUF Gaming A15 FA507NU LP034W
+                  {productCart.title}
                 </h2>
               </div>
               <a
@@ -171,7 +171,7 @@ function Header() {
           />
         </svg>
       ),
-      title: "Sản phẩm đã xem",
+      title: "Sản phẩm yêu thích",
     },
   ];
   const [openRegister, setOpenRegister] = useState(false);

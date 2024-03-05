@@ -5,7 +5,7 @@ import FavoriteProduct from "./FavoriteProduct";
 import OrderManager from "./OrderManager";
 import DetailOrder from "./OrderManager/DetailOrder";
 import { UserContext } from "../../Context/AccountUser";
-const MENU_LOGIN = [
+const MENU_ACCOUNT = [
   {
     id: 0,
     icon: (
@@ -81,7 +81,7 @@ const MENU_LOGIN = [
         />
       </svg>
     ),
-    title: "Sản phẩm đã thích",
+    title: "Sản phẩm yêu thích",
   },
 ];
 
@@ -123,7 +123,7 @@ function AccountLayout(props) {
             <h2 className="font-semibold ml-2">{userAccount.userName}</h2>
           </div>
           <div className="flex flex-col justify-center gap-y-3 mt-3">
-            {MENU_LOGIN.map((item) => (
+            {MENU_ACCOUNT.map((item) => (
               <div
                 className={`flex items-center justify-start gap-x-2 p-1 rounded-md cursor-pointer hover:bg-gray-100 hover:text-red-500 ${
                   parseInt(tab) === item.id && "text-red-500"

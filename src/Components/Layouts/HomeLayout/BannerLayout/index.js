@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import { getImageBanner } from "../../../Services/ProductsServices/GetImagesBanner";
 import { Carousel } from "antd";
 const IMAGES = [
@@ -31,14 +29,14 @@ const IMAGES = [
   },
 ];
 function BannerLayout(props) {
-  const [dataImage, setDataImage] = useState([]);
-  useEffect(() => {
-    const fetchAPI = async () => {
-      const res = await getImageBanner(5);
-      setDataImage(res);
-    };
-    // fetchAPI()
-  }, []);
+  // const [dataImage, setDataImage] = useState([]);
+  // useEffect(() => {
+  //   const fetchAPI = async () => {
+  //     const res = await getImageBanner(5);
+  //     setDataImage(res);
+  //   };
+  //   // fetchAPI()
+  // }, []);
 
   return (
     <div className="basis-auto sm">

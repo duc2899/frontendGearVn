@@ -1,6 +1,6 @@
 import StarIcon from "@mui/icons-material/Star";
 import CloseIcon from "@mui/icons-material/Close";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { createFeedbackService } from "../../../../Services/FeedbackServices/CreateFeedbackService";
 import { getProductByID } from "../../../../Services/ProductsServices/getProductByIDService";
 import { toast } from "react-toastify";
@@ -20,6 +20,10 @@ function ModalFeedback({ exitModal, data, idUser, setData }) {
   const [text, setText] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [product, setProduct] = useState({});
+  useEffect(() => {
+    setProduct(data);
+  }, [data]);
   const handelSendFeedback = async () => {
     if (currentStar > 5 || currentStar <= 0) {
       return;
@@ -31,7 +35,7 @@ function ModalFeedback({ exitModal, data, idUser, setData }) {
     }
     setLoading(true);
     const res = await createFeedbackService({
-      idProduct: data.id,
+      idProduct: product.id,
       idUser: idUser,
       message: text,
       star: currentStar,
@@ -39,8 +43,8 @@ function ModalFeedback({ exitModal, data, idUser, setData }) {
     if (res.status === 200) {
       setLoading(false);
       const fetchAPI = async () => {
-        const res = await getProductByID(data.id);
-        setData(res);
+        const res = await getProductByID(product.type, product.id);
+        setData(res.data);
       };
       fetchAPI();
       toast.success("Đánh giá sản phẩm thành công");
@@ -60,17 +64,17 @@ function ModalFeedback({ exitModal, data, idUser, setData }) {
         <div className="lg:w-1/3 w-full h-96 bg-red-600 flex items-center justify-center flex-col lg:rounded-tl-md lg:rounded-bl-md rounded-none">
           <img
             className="w-64 h-64 object-cover rounded-md"
-            src={data.image}
+            src={product.image}
             alt="art"
           />
           <p className="text-white text-center mt-2 font-semibold break-words ">
-            {data.title}
+            {product.title}
           </p>
         </div>
         <div className="p-2 lg:w-2/3 w-full">
           <h2 className="flex font-semibold p-2">
             Đánh giá của bạn về:
-            <p className="font-bold pl-2">{data.title}</p>
+            <p className="font-bold pl-2">{product.title}</p>
           </h2>
           <div className="p-2 flex items-center gap-x-2">
             <p className="font-semibold">Mức độ đánh giá *:</p>

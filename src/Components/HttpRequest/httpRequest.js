@@ -4,8 +4,8 @@ const httpRequest = axios.create({
   baseURL: process.env.REACT_APP_BASE_URL,
 });
 
-export const get = async (path, formData, options = {}) => {
-  const response = await httpRequest.get(path, formData, options);
+export const get = async (path, formData) => {
+  const response = await httpRequest.get(path, formData);
   return response.data;
 };
 export const post = async (path, formData, options = {}) => {

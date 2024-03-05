@@ -96,6 +96,14 @@ function SuccessOrder({ dataBill }) {
               </div>
             )}
           </div>
+          {dataBill.note && (
+            <div className="w-full border-b-1px px-2 py-4 flex items-center justify-center flex-col">
+              <div className="flex items-center justify-between w-full">
+                <p className="font-medium">Lưu ý</p>
+                <p>{convertMoney(dataBill.note)}</p>
+              </div>
+            </div>
+          )}
           <div className="w-full px-2 py-4">
             <div className="flex items-center justify-between w-full">
               <p className="font-medium">Tổng cộng</p>

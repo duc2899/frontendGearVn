@@ -1,10 +1,11 @@
 import * as httpRequest from "../../HttpRequest/httpRequest";
 
 export const getProductByID = async (type, id) => {
-  try {
-    const res = await httpRequest.get(`/public/user/product/${type}/${id}`);
-    return res.data;
-  } catch (error) {
-    console.log(error);
-  }
+  return await httpRequest
+    .get(`/public/user/product/${type}/${id}`)
+    .catch((error) => {
+      if (error?.response?.status !== 200 || error?.response?.status !== 201) {
+        return error?.response?.data;
+      }
+    });
 };

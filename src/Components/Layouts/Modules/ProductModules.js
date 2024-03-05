@@ -109,7 +109,7 @@ function ProductModules({ data, type }) {
         {filterData.map((laptop) =>
           test[0].icons.map(
             (icon) =>
-              laptop.name === icon.name && (
+              laptop.name.toUpperCase() === icon.name && (
                 <div key={laptop.id} className="flex items-center gap-1">
                   <img
                     src={icon.icon}

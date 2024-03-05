@@ -13,23 +13,14 @@ const AccountUserContext = ({ children }) => {
   useEffect(() => {
     if (GetCookie("user") || reload) {
       const fetchAPICheckToken = async () => {
-        const result = await checkTokenService({
-          token: GetCookie("user").token,
-        });
-
-        if (result.status === 200) {
-          const fetchAPIGetUser = async () => {
-            const res = await getInforUserService({
-              email: GetCookie("user").email,
-            });
-            setUserAccount(res.data);
-            setIsLogin(true);
-          };
-          fetchAPIGetUser();
-        } else {
-          setIsLogin(false);
-          DeleteCookie("user");
-        }
+        const fetchAPIGetUser = async () => {
+          const res = await getInforUserService({
+            email: GetCookie("user").email,
+          });
+          setUserAccount(res.data);
+          setIsLogin(true);
+        };
+        fetchAPIGetUser();
       };
       fetchAPICheckToken();
       setReload(false);

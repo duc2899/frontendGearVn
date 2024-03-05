@@ -6,89 +6,21 @@ import ArrowCircleRightIcon from "@mui/icons-material/ArrowCircleRight";
 import ArrowCircleLeftIcon from "@mui/icons-material/ArrowCircleLeft";
 import { getAllProduct } from "../../../Services/ProductsServices/GetAllProductService";
 import { useNavigate } from "react-router-dom";
-const MouseData = [
-  {
-    id: "awefawe-123123dwdw",
-    type: "keyboard",
-    title: "Bàn phím cơ AKKO 3108 v2 DS Horizon Akko Switch V3 Cream Blue",
-    image:
-      "https://product.hstatic.net/200000722513/product/1_94e8754f691f44b19fbb2f94dcfa6ead_grande.jpg",
-    oldPrice: 1090000,
-    saleRate: 0.3,
-    quantity: 3,
-    properties: [
-      {
-        id: 1,
-        properties: "100 – 25.400",
-        name: "MATERIAL",
-        isPublic: true,
-      },
-      {
-        id: 2,
-        properties: "440 x 140 x 40mm",
-        name: "SIZE",
-        isPublic: false,
-      },
-      {
-        id: 3,
-        properties: "Khong day",
-        name: "CONNECTION",
-        isPublic: true,
-      },
-      {
-        id: 4,
-        properties: "Cream Blue Akko switch v2",
-        name: "SWITCH",
-        isPublic: false,
-      },
-      {
-        id: 5,
-        properties: "Full size",
-        name: "EXPAND",
-        isPublic: true,
-      },
-      {
-        id: 6,
-        properties: "Akko",
-        name: "PRODUCER",
-        isPublic: false,
-      },
-    ],
-    dataFeedback: [
-      {
-        name: "Ho Tho Hoan",
-        createdAt: "2-7-2023",
-        star: 4,
-        message: "Đẹp",
-      },
-    ],
-    stars: [
-      {
-        star: 5,
-        count: 100,
-      },
-      {
-        star: 4,
-        count: 10,
-      },
-      {
-        star: 3,
-        count: 1,
-      },
-      {
-        star: 2,
-        count: 6,
-      },
-      {
-        star: 1,
-        count: 5,
-      },
-    ],
-  },
-];
-function KeyboardCollections(props) {
-  const navigate = useNavigate();
 
+function KeyboardCollections() {
+  const navigate = useNavigate();
+  const [keyboardData, setKeyBoardData] = useState([]);
+  useEffect(() => {
+    const fetchAPI = async () => {
+      try {
+        const data = await getAllProduct("keyboard", 0, 4);
+        setKeyBoardData(data.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchAPI();
+  }, []);
   const responsive = {
     desktop: {
       breakpoint: { max: 3000, min: 1024 },
@@ -141,7 +73,7 @@ function KeyboardCollections(props) {
             <ArrowCircleLeftIcon className="text-4xl absolute left-0 cursor-pointer hover:opacity-60 transition-opacity"></ArrowCircleLeftIcon>
           }
         >
-          {MouseData.map((data, index) => (
+          {keyboardData.map((data, index) => (
             <ProductModules
               key={index}
               data={data}

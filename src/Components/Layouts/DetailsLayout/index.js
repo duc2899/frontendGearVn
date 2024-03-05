@@ -13,35 +13,47 @@ import { UserContext } from "../../Context/AccountUser";
 import ModalLogin from "../DefaultLayout/Modal/ModalLogin";
 import { actionCartService } from "../../Services/CartServices/ActionsCartService";
 import { CartUserProvider } from "../../Context/CartUser";
-function DetailLayout(props) {
-  const { isLogin, userAccount, setReload } = useContext(UserContext);
-  const { setShowCart } = useContext(CartUserProvider);
-  const [open, setOpen] = useState(false);
+import { Button, Result } from "antd";
+import Heart from "react-animated-heart";
+import { crateFavoriteProductService } from "../../Services/FavoriteServices/CreateFavoriteProductService";
+import { toast } from "react-toastify";
+
+function DetailLayout() {
   const location = window.location.pathname.split("/");
+  let id = location[3];
+  const { isLogin, userAccount, setReload } = useContext(UserContext);
+  const { setShowCart, setProductCart } = useContext(CartUserProvider);
+  const [open, setOpen] = useState(false);
   const [data, setData] = useState({});
+  const [error, setError] = useState(false);
+  const [isClick, setClick] = useState(false);
   useEffect(() => {
-    console.log(location);
     const fetchAPI = async () => {
-      try {
-        const res = await getProductByID(location[2], location[3]);
-        setData(res);
-      } catch (err) {
-        console.log(err);
+      const res = await getProductByID(location[2], id);
+      if (res.status === 200) {
+        setError(false);
+        setData(res.data);
+      } else {
+        setError(true);
       }
     };
     fetchAPI();
-  }, [location[3]]);
+  }, [id]);
 
-  const handelAddToCart = (id) => {
+  const handelAddToCart = () => {
     if (isLogin) {
       const fetchAPI = async () => {
         const res = await actionCartService({
           idUser: userAccount.id,
           amount: 1,
-          id_product: id,
+          id_product: data.id,
         });
         if (res.status === 200) {
           setShowCart(true);
+          setProductCart({
+            image: data.image,
+            title: data.title,
+          });
           setReload(true);
         }
       };
@@ -50,7 +62,32 @@ function DetailLayout(props) {
       setOpen(true);
     }
   };
-  return (
+  const handelClickHeart = (idProduct) => {
+    crateFavoriteProductService({
+      idUser: userAccount.id,
+      idProduct: idProduct,
+    }).then((d) => {
+      if (d.status === 200) {
+        setClick(true);
+        toast.success("Thêm sản phẩm vao mục yêu thích thành công");
+      } else {
+        toast.error(d.message);
+        setClick(false);
+      }
+    });
+  };
+  return error ? (
+    <Result
+      status="404"
+      title="404"
+      subTitle="Sorry, the page you visited does not exist."
+      extra={
+        <Button type="primary" href="/">
+          Back Home
+        </Button>
+      }
+    />
+  ) : (
     <div className="w-full bg-gray-300 pb-3">
       <div className="mx-auto flex max-w-7xl lg:px-8 flex-col">
         <div className="flex items-center justify-start gap-x-3 mt-2">
@@ -106,10 +143,10 @@ function DetailLayout(props) {
               )}
             </div>
             <div className="mt-2">
-              <div>
+              <div className="flex items-center">
                 {data.quantity > 0 ? (
                   <button
-                    onClick={() => handelAddToCart(data.id)}
+                    onClick={() => handelAddToCart(data)}
                     className={`w-2/4 bg-red-600 rounded-md p-3 text-white text-lg font-semibold hover:opacity-90 transition-all`}
                   >
                     THÊM VÀO GIỎ HÀNG
@@ -122,6 +159,12 @@ function DetailLayout(props) {
                     HẾT HÀNG
                   </button>
                 )}
+                <div className="">
+                  <Heart
+                    isClick={isClick}
+                    onClick={() => handelClickHeart(data.id)}
+                  />
+                </div>
               </div>
             </div>
             <div className="mt-3">

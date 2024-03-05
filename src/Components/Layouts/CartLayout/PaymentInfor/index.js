@@ -197,6 +197,7 @@ const PaymentInfor = ({
       priceDelivery: 100000,
       idUser: idUser,
       discountCode: applyDiscount.code,
+      note: dataOrder.note,
       products: products,
     };
     const res = await createBillService(data);

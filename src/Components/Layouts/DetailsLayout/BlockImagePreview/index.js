@@ -26,7 +26,7 @@ function BlockImagePreview({ PreviewImages }) {
       <div>
         <img
           className="w-fit h-fit object-cover cursor-zoom-in"
-          src={PreviewImages[curImage].image}
+          src={PreviewImages[curImage]?.image}
           alt="helo"
           ref={imageRef}
           onMouseLeave={() => setResultZoom(false)}
@@ -36,7 +36,7 @@ function BlockImagePreview({ PreviewImages }) {
         {resultZoom && (
           <div
             style={{
-              backgroundImage: `url(${PreviewImages[curImage].image})`,
+              backgroundImage: `url(${PreviewImages[curImage]?.image})`,
             }}
             ref={resultImageRef}
             className={`fixed w-40 h-40 border border-gray-400 translate-y-4 -translate-x-1/2 bg-no-repeat rounded-full`}

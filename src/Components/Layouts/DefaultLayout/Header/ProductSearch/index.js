@@ -44,7 +44,6 @@ const ProductSearch = () => {
 
   return (
     <div
-      onBlur={() => setShow(false)}
       onFocus={handelFocus}
       onKeyDown={handelOnKeyDown}
       className="relative bg-white rounded-md lg:w-5/12 w-full flex justify-between items-center px-3 mr-3"
@@ -65,6 +64,7 @@ const ProductSearch = () => {
           data.map((item) => (
             <Link
               to={`/details/${item.category}/${item.id}`}
+              onClick={() => setShow(false)}
               className="p-2 py-3 flex items-center justify-between gap-x-2 border-b-2 hover:bg-red-100 transition-colors"
               key={item.id}
             >

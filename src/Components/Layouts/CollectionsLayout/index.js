@@ -6,9 +6,10 @@ import ProductModules from "../Modules/ProductModules";
 import { getAllProduct } from "../../Services/ProductsServices/GetAllProductService";
 import { Empty, Pagination } from "antd";
 import { searchCollectionService } from "../../Services/ProductsServices/SearchCollectionsService";
+import { sortPriceProductPrice } from "../../Services/ProductsServices/SortPriceProductService";
 function CollectionModules() {
-  const [res, setRes] = useState({});
   const location = window.location.pathname.split("/");
+  const [res, setRes] = useState({});
   const [page, setPage] = useState(0);
   useEffect(() => {
     fetchProductTotal(location[location.length - 1], page);
@@ -16,15 +17,7 @@ function CollectionModules() {
   }, [location[location.length - 1], page]);
 
   const Modules = ({ data }) => {
-    if (location[location.length - 1] === "laptop") {
-      return <ProductModules data={data} type={data.type}></ProductModules>;
-    } else if (location[location.length - 1] === "mouse") {
-      return <ProductModules data={data} type={data.type}></ProductModules>;
-    } else if (location[location.length - 1] === "keyboard") {
-      return <ProductModules></ProductModules>;
-    } else {
-      console.log("12");
-    }
+    return <ProductModules data={data} type={data.type}></ProductModules>;
   };
 
   const arr = [];
@@ -33,31 +26,41 @@ function CollectionModules() {
   const [open, setOpen] = useState(1);
   const [filter, setFilter] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [sort, setSort] = useState(0);
+  const [sort, setSort] = useState("");
   const [filterArr, setFilterArr] = useState([]);
 
-  const items = [
+  const sortItems = [
     {
-      key: 1,
+      key: "Giá tăng dần",
       label: <p className="font-semibold">Tăng dần</p>,
-      name: "Giá tăng dần",
     },
     {
-      key: 2,
+      key: "Giá giảm dần",
       label: <p className="font-semibold">Giảm dần</p>,
-      name: "Giá giảm dần",
     },
   ];
-  // useEffect(() => {
-  //   if(sort){
-
-  //   }
-  // }, [sort])
+  useEffect(() => {
+    if (sort) {
+      let data = {
+        type: "",
+        sort: "",
+      };
+      data.type = location[location.length - 1];
+      if (sort === "Giá tăng dần") {
+        data.sort = "ascending";
+      } else if (sort === "Giá giảm dần") {
+        data.sort = "descending";
+      }
+      sortPriceProductPrice(page, 15, data.sort, data.type).then((d) =>
+        setRes(d)
+      );
+    }
+  }, [sort, page]);
   const handleOpenChange = (id) => {
     setOpen(id);
     setIsOpen(true);
   };
-  res.data?.map((item) => {
+  res?.data?.map((item) => {
     if (!arr.includes(item.properties[open - 1].properties)) {
       return arr.push(item.properties[open - 1].properties);
     }
@@ -131,32 +134,15 @@ function CollectionModules() {
     }
   };
   const fetchProductTotal = (type, page) => {
-    if (type === "laptop") {
-      const fetchAPI = async () => {
-        try {
-          const data = await getAllProduct("laptop", page, 15);
-          setRes(data);
-        } catch (err) {
-          console.log(err);
-        }
-      };
-      fetchAPI();
-      return;
-    } else if (type === "mouse") {
-      const fetchAPI = async () => {
-        try {
-          const data = await getAllProduct("mouse", page, 15);
-          setRes(data);
-        } catch (err) {
-          console.log(err);
-        }
-      };
-      fetchAPI();
-      return;
-    } else if (type === "keyboard") {
-    } else {
-      console.log("12");
-    }
+    const fetchAPI = async () => {
+      try {
+        const data = await getAllProduct(type, page, 15);
+        setRes(data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchAPI();
   };
   return (
     <div>
@@ -248,7 +234,7 @@ function CollectionModules() {
                       Bộ lọc
                     </button>
                   </Popover>
-                  {res?.data[0]?.properties.map((laptopProperty, index) => (
+                  {res.data[0]?.properties.map((laptopProperty, index) => (
                     <Popover
                       content={
                         <div className="lg:w-96 min-w-min" key={index}>
@@ -321,8 +307,8 @@ function CollectionModules() {
                 <div className="w-full flex justify-start items-center lg:justify-end mt-3">
                   <Dropdown
                     menu={{
-                      items: items,
-                      onClick: (e) => setSort(parseInt(e.key)),
+                      items: sortItems,
+                      onClick: (e) => setSort(e.key),
                     }}
                     placement="bottom"
                     trigger={"click"}
@@ -341,7 +327,7 @@ function CollectionModules() {
                         />
                       </svg>
                       Xếp theo:
-                      <p className="font-bold mx-1">{items[sort].name}</p>
+                      <p className="font-bold mx-1">{sort}</p>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
@@ -358,7 +344,7 @@ function CollectionModules() {
                   </Dropdown>
                 </div>
                 <div className="flex flex-wrap mt-3 gap-x-8 gap-y-8 lg:justify-stretch justify-center">
-                  {res.data?.map((data, index) => (
+                  {res.data.map((data, index) => (
                     <Modules data={data} key={index}></Modules>
                   ))}
                 </div>

@@ -81,8 +81,8 @@ function OrderInfor({ onChange, setDataOrder, idUser, totalOrder }) {
 
   useEffect(() => {
     const getCity = async () => {
-      const result = await axios.get("https://provinces.open-api.vn/api/");
-      setCity(result.data);
+      const result = await axios.get("https://vapi.vnappmob.com/api/province");
+      setCity(result.data.results);
     };
     getCity();
   }, []);
@@ -90,9 +90,9 @@ function OrderInfor({ onChange, setDataOrder, idUser, totalOrder }) {
     if (currentCity.code) {
       const getDistricts = async () => {
         const result = await axios.get(
-          `https://provinces.open-api.vn/api/p/${currentCity.code}?depth=2`
+          `https://vapi.vnappmob.com/api/province/district/${currentCity.code}`
         );
-        setDistricts(result.data.districts);
+        setDistricts(result.data.results);
         if (!resultChoose) {
           setCurrentDistricts({
             code: "",
@@ -111,9 +111,9 @@ function OrderInfor({ onChange, setDataOrder, idUser, totalOrder }) {
     if (currentDistricts.code) {
       const getWards = async () => {
         const result = await axios.get(
-          `https://provinces.open-api.vn/api/d/${currentDistricts.code}?depth=2`
+          `https://vapi.vnappmob.com/api/province/ward/${currentDistricts.code}`
         );
-        setWards(result.data.wards);
+        setWards(result.data.results);
         if (!resultChoose) {
           setCurrentWard({ code: "", name: "Chọn Phường, Xã" });
         }
@@ -231,8 +231,8 @@ function OrderInfor({ onChange, setDataOrder, idUser, totalOrder }) {
                   <option value={currentCity.code}>{currentCity.name}</option>
 
                   {city.map((item) => (
-                    <option key={item.code} value={item.code}>
-                      {item.name}
+                    <option key={item.province_id} value={item.province_id}>
+                      {item.province_name}
                     </option>
                   ))}
                 </select>
@@ -260,8 +260,11 @@ function OrderInfor({ onChange, setDataOrder, idUser, totalOrder }) {
                     {currentDistricts.name}
                   </option>
                   {districts.map((district) => (
-                    <option key={district.code} value={district.code}>
-                      {district.name}
+                    <option
+                      key={district.district_id}
+                      value={district.district_id}
+                    >
+                      {district.district_name}
                     </option>
                   ))}
                 </select>
@@ -285,8 +288,8 @@ function OrderInfor({ onChange, setDataOrder, idUser, totalOrder }) {
                 >
                   <option value={currentWard.code}>{currentWard.name}</option>
                   {wards.map((ward) => (
-                    <option key={ward.code} value={ward.code}>
-                      {ward.name}
+                    <option key={ward.ward_id} value={ward.ward_id}>
+                      {ward.ward_name}
                     </option>
                   ))}
                 </select>

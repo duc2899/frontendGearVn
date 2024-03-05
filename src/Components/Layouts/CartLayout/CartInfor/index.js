@@ -50,9 +50,11 @@ function CartInfor({
                 alt={item.title}
                 className="w-24 h-24 object-contain border"
               ></img>
-              <div className="flex items-center justify-center mt-2 hover:text-red-500 cursor-pointer transition-colors">
+              <div
+                className="flex items-center justify-center mt-2 hover:text-red-500 cursor-pointer transition-colors"
+                onClick={() => handelActionCart(-item.amount, item.idProduct)}
+              >
                 <svg
-                  onClick={() => handelActionCart(-item.amount, item.idProduct)}
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"

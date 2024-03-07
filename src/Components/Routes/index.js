@@ -6,6 +6,7 @@ import CollectionModules from "../Layouts/CollectionsLayout";
 import LuckySpinLayout from "../Layouts/LuckySpinLayout";
 import NotFoundLayout from "../Layouts/NotFoundLayout";
 import ShowRoomSystem from "../Layouts/ShowRoomSystem";
+import ActivateAccountLayout from "../Layouts/ActivateAccountLayout";
 export const publicRoutes = [
   { path: "/", component: HomePage },
   { path: "/details/:name/:id", component: DetailLayout },
@@ -13,6 +14,7 @@ export const publicRoutes = [
   { path: "/cart", component: CartLayout },
   { path: "/showRoom", component: ShowRoomSystem },
   { path: "*", component: NotFoundLayout },
+  { path: "/activateAccount/:id", component: ActivateAccountLayout },
 ];
 export const privateRoutes = [
   { path: "/", component: HomePage },

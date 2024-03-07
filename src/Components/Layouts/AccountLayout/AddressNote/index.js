@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ModalAddress from "./ModalAddress";
-import { Popconfirm } from "antd";
+import { Empty, Popconfirm } from "antd";
 import { getAddressNoteService } from "../../../Services/AddressNoteServices/GetAddressNoteService";
 import { deleteAddressNoteService } from "../../../Services/AddressNoteServices/DeleteAddressNoteService";
 import { toast } from "react-toastify";
@@ -75,53 +75,59 @@ function AddressNote({ idUser }) {
         </button>
       </div>
       <div>
-        {data.map((item, i) => (
-          <div key={i} className="my-6 ">
-            <div className="flex items-center justify-between">
-              <div>
-                <span className="mr-1 font-semibold">{item.nameCustomer}</span>|
-                <span className="ml-1">{item.phoneNumber}</span>
-              </div>
-              <div>
-                <button
-                  onClick={() => handelEdit(i)}
-                  className="bg-green-500 font-medium p-1.5 text-sm text-white rounded-md"
-                >
-                  Cập nhật
-                </button>
-                <Popconfirm
-                  title="Xóa địa chỉ này"
-                  description="Bạn có chắc bạn muốn xóa địa chỉ này?"
-                  onConfirm={() => confirm(item.id)}
-                  okText="Xóa"
-                  cancelText="Không"
-                >
-                  <button className="bg-red-500 font-medium p-1.5 text-sm ml-1 text-white rounded-md">
-                    Xóa
+        {data.length > 0 ? (
+          data.map((item, i) => (
+            <div key={i} className="my-6 ">
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="mr-1 font-semibold">
+                    {item.nameCustomer}
+                  </span>
+                  |<span className="ml-1">{item.phoneNumber}</span>
+                </div>
+                <div>
+                  <button
+                    onClick={() => handelEdit(i)}
+                    className="bg-green-500 font-medium p-1.5 text-sm text-white rounded-md"
+                  >
+                    Cập nhật
                   </button>
-                </Popconfirm>
+                  <Popconfirm
+                    title="Xóa địa chỉ này"
+                    description="Bạn có chắc bạn muốn xóa địa chỉ này?"
+                    onConfirm={() => confirm(item.id)}
+                    okText="Xóa"
+                    cancelText="Không"
+                  >
+                    <button className="bg-red-500 font-medium p-1.5 text-sm ml-1 text-white rounded-md">
+                      Xóa
+                    </button>
+                  </Popconfirm>
+                </div>
               </div>
+              <div>
+                {item.homeAddress +
+                  ", " +
+                  item.ward.name +
+                  ", " +
+                  item.district.name +
+                  ", " +
+                  item.city.name}
+              </div>
+              {openModal.isOpen && openModal.isEdit && edit === i && (
+                <ModalAddress
+                  open={openModal}
+                  setOpen={setOpenModal}
+                  dataEdit={data[edit]}
+                  idUser={idUser}
+                  setData={setData}
+                ></ModalAddress>
+              )}
             </div>
-            <div>
-              {item.homeAddress +
-                ", " +
-                item.ward.name +
-                ", " +
-                item.district.name +
-                ", " +
-                item.city.name}
-            </div>
-            {openModal.isOpen && openModal.isEdit && edit === i && (
-              <ModalAddress
-                open={openModal}
-                setOpen={setOpenModal}
-                dataEdit={data[edit]}
-                idUser={idUser}
-                setData={setData}
-              ></ModalAddress>
-            )}
-          </div>
-        ))}
+          ))
+        ) : (
+          <Empty description="Chưa có địa chỉ nào"></Empty>
+        )}
       </div>
       {openModal.isOpen && !openModal.isEdit && (
         <ModalAddress

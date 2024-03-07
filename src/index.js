@@ -7,21 +7,26 @@ import "animate.css";
 import AccountUserContext from "./Components/Context/AccountUser";
 import { ToastContainer } from "react-toastify";
 import CartUserContext from "./Components/Context/CartUser";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <AccountUserContext>
-      <CartUserContext>
-        <App />
-        <ToastContainer
-          className={"top-20"}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          position="top-right"
-        />
-      </CartUserContext>
-    </AccountUserContext>
+    <GoogleOAuthProvider clientId="590286605832-15pgs43gogub4ga0p82di8g1g4h3i0s9.apps.googleusercontent.com">
+      <AccountUserContext>
+        <CartUserContext>
+          <App />
+          <ToastContainer
+            className={"top-20"}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            position="top-right"
+          />
+        </CartUserContext>
+      </AccountUserContext>
+    </GoogleOAuthProvider>
+    ;
   </React.StrictMode>
 );
 

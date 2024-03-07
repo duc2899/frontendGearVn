@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Modal } from "antd";
 import { useForm } from "react-hook-form";
-import { registerAccountService } from "../../../Services/AccountServices/RegisterAccountService";
+import { registerAccountService } from "../../../Services/AuthServices/RegisterAccountService";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { checkEmailService } from "../../../Services/AccountServices/CheckEmailService";

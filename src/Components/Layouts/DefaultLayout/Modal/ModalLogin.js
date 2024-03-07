@@ -1,23 +1,41 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Modal } from "antd";
 import { useForm } from "react-hook-form";
-import { loginAccountService } from "../../../Services/AccountServices/LoginAccountService";
+import { loginAccountService } from "../../../Services/AuthServices/LoginAccountService";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import SetCookie from "../../../Utils/Cookie/SetCookie";
 import { UserContext } from "../../../Context/AccountUser";
+import { GoogleLogin } from "@react-oauth/google";
+import { jwtDecode } from "jwt-decode";
+import { loginAccountWithGoogleService } from "../../../Services/AuthServices/LoginAccountWithGoogle";
+import GetCookie from "../../../Utils/Cookie/GetCookie";
+import DeleteCookie from "../../../Utils/Cookie/DeleteCookie";
+
 function ModalLogin({ open, setOpen, setRegister, setForgotPass }) {
   const { setUserAccount, setIsLogin } = useContext(UserContext);
   const [showPassword, setShowPassword] = useState("password");
+  const [isRemember, setIsRemember] = useState(false);
   const {
     register,
     handleSubmit,
-
+    setValue,
     formState: { errors },
   } = useForm();
 
   const onSubmit = (data) => {
     const fetchAPI = async () => {
+      if (isRemember) {
+        SetCookie(
+          "rememberAccount",
+          {
+            ...data,
+          },
+          2
+        );
+      } else {
+        DeleteCookie("rememberAccount");
+      }
       const result = await loginAccountService(data);
       if (result.status === 200) {
         setUserAccount(result.data);
@@ -28,12 +46,13 @@ function ModalLogin({ open, setOpen, setRegister, setForgotPass }) {
           {
             email: result.data.email,
             token: result.data.accessToken,
+            type: result.data.type,
           },
           1
         );
         setIsLogin(true);
       } else {
-        toast.error("Tài khoản hoặc mật khẩu không chính xác");
+        toast.error(result.message);
       }
     };
     fetchAPI();
@@ -42,6 +61,35 @@ function ModalLogin({ open, setOpen, setRegister, setForgotPass }) {
     setOpen(false);
     setRegister(true);
   };
+  const handelResponseLoginGoogle = (data) => {
+    const decoded = jwtDecode(data.credential);
+    loginAccountWithGoogleService({
+      email: decoded.email,
+      name: decoded.name,
+    }).then((d) => {
+      setUserAccount(d.data);
+      setOpen(false);
+      toast.success("Đăng nhập hệ thống thành công");
+      SetCookie(
+        "user",
+        {
+          email: d.data.email,
+          token: d.data.accessToken,
+          type: d.data.type,
+        },
+        1
+      );
+      setIsLogin(true);
+    });
+  };
+
+  useEffect(() => {
+    if (GetCookie("rememberAccount")) {
+      setIsRemember(true);
+      setValue("email", GetCookie("rememberAccount").email);
+      setValue("password", GetCookie("rememberAccount").password);
+    }
+  }, []);
   return (
     <Modal
       title={<h2 className="text-2xl text-center">ĐĂNG NHẬP TÀI KHOẢN</h2>}
@@ -142,15 +190,64 @@ function ModalLogin({ open, setOpen, setRegister, setForgotPass }) {
                 </p>
               </div>
             </div>
+            <div class="inline-flex items-center">
+              <label
+                class="relative flex items-center p-3 rounded-full cursor-pointer"
+                htmlFor="check"
+              >
+                <input
+                  type="checkbox"
+                  class="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-red-500 checked:bg-red-500 checked:before:bg-red-500 hover:before:opacity-10"
+                  id="check"
+                  checked={isRemember}
+                  onChange={() => setIsRemember(!isRemember)}
+                />
+                <span class="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-3.5 w-3.5"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    stroke="currentColor"
+                    stroke-width="1"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      clip-rule="evenodd"
+                    ></path>
+                  </svg>
+                </span>
+              </label>
+              <label
+                class="mt-px font-normal text-gray-700 cursor-pointer select-none"
+                htmlFor="check"
+              >
+                Nhớ tài khoản
+              </label>
+            </div>
           </div>
-
           <button
-            className={`mt-14 block w-full select-none rounded-lg bg-red-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-red-500/20 transition-all hover:shadow-lg hover:shadow-red-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none`}
+            className={`mt-2 mb-3 block w-full select-none rounded-lg bg-red-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-red-500/20 transition-all hover:shadow-lg hover:shadow-red-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none`}
             type="submit"
             data-ripple-light="true"
           >
             Đăng nhập
           </button>
+          <div className="flex items-center justify-center mb-2 ">
+            <p className="inline-block ">Hoặc đăng nhập bằng</p>
+          </div>
+          <div className="flex items-center justify-center w-full">
+            <GoogleLogin
+              onSuccess={(credentialResponse) =>
+                handelResponseLoginGoogle(credentialResponse)
+              }
+              onError={() => {
+                toast.error("Hệ thống đang xảy ra lỗi. Vui lòng nhập lại");
+              }}
+            />
+          </div>
+
           <div className="flex items-center justify-center gap-x-2 mt-2">
             <span>Bạn chưa có tài khoản?</span>
             <p

@@ -3,7 +3,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import { UserContext } from "../../../Context/AccountUser";
 import { useNavigate } from "react-router-dom";
-import { logoutAccountService } from "../../../Services/AccountServices/LogoutAccountService";
+import { logoutAccountService } from "../../../Services/AuthServices/LogoutAccountService";
 import DeleteCookie from "../../../Utils/Cookie/DeleteCookie";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";

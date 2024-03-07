@@ -3,8 +3,10 @@ import { useForm } from "react-hook-form";
 import { editAccountService } from "../../../../Services/AccountServices/EditAccountService";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import GetCookie from "../../../../Utils/Cookie/GetCookie";
 
 function InforAccount({ Data, setReload }) {
+  const cookieData = GetCookie("user");
   const [loading, setLoading] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [isChange, setIsChange] = useState(false);
@@ -66,7 +68,8 @@ function InforAccount({ Data, setReload }) {
         {isEdit ? (
           <div className="flex items-start flex-col">
             <input
-              className="p-2 rounded-md bg-white border focus:outline-none"
+              disabled={cookieData.type !== "NORMAL"}
+              className="p-2 rounded-md bg-white border focus:outline-none disabled:opacity-50"
               defaultValue={UserData.userName}
               {...register("userName", {
                 required: true,

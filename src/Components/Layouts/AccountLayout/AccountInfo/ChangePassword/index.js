@@ -3,7 +3,9 @@ import { useForm } from "react-hook-form";
 import { checkPasswordService } from "../../../../Services/AccountServices/CheckPasswordService";
 import { changePasswordService } from "../../../../Services/AccountServices/ChangePasswordService";
 import { toast } from "react-toastify";
+import GetCookie from "../../../../Utils/Cookie/GetCookie";
 function ChangePassword({ Data }) {
+  const dataCookie = GetCookie("user");
   const [loading, setLoading] = useState(false);
   const [showPasswordCurrent, setShowPasswordCurrent] = useState("password");
   const [showPassword, setShowPassword] = useState("password");
@@ -242,7 +244,7 @@ function ChangePassword({ Data }) {
           )}
         </div>
         <button
-          disabled={loading}
+          disabled={loading || dataCookie.type === "GOOGLE"}
           className="bg-red-500 rounded-md p-2 w-full text-white mt-10 font-medium text-base hover:opacity-80 transition-opacity disabled:opacity-70 disabled:cursor-default cursor-pointer"
         >
           {loading ? (
